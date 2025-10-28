@@ -16,8 +16,6 @@ The system captures a person’s face in real-time, detects their identity, mark
 - 🌐 **Frontend Interface** – Built using HTML, CSS, and JS for displaying live results and logs.
 - 📸 **Real-time Processing** – Uses OpenCV to process video frames efficiently.
 
----
-
 ## 🧩 Tech Stack
 
 | Component | Technology Used |
@@ -29,7 +27,6 @@ The system captures a person’s face in real-time, detects their identity, mark
 | **Backend** | Flask / Python (for server integration) |
 | **Models Used** | Pre-trained Age, Gender, and Emotion models |
 
----
 
 ## 📂 Project Structure
 
@@ -55,17 +52,12 @@ AI-Face-Attendance-System/
 │ └── preprocess.py
 └── README.md
 
-yaml
-Copy code
-
----
 
 ## ⚙️ Installation & Setup
 
 ### 1️⃣ Clone the Repository
 
-git clone https://github.com/<your-username>/AI-Face-Attendance-System.git
-cd AI-Face-Attendance-System
+git clone (https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System)
 2️⃣ Create Virtual Environment
 bash
 Copy code
@@ -124,52 +116,23 @@ Face Recognition: Uses face_recognition (dlib-based HOG + CNN)
 🧑‍💻 Screenshots
 (Add your screenshots here after uploading to /static/images/screenshots/)
 
-scss
 Copy code
 ![Dashboard](static/images/screenshots/dashboard.png)
 ![Live Detection](static/images/screenshots/live_detection.png)
 💡 Future Enhancements
-Add attendance export (CSV/Excel)
 
-Integrate email notification for absentees
-
-Cloud database (MySQL / Firebase)
-
-Face registration through the web UI
 
 Improve accuracy using deep learning-based facial embeddings
 
 📜 License
-This project is licensed under the MIT License — you are free to use, modify, and distribute it for educational and research purposes.
+This project is licensed under the Apache License — you are free to use, modify, and distribute it for educational and research purposes.
 
 🧑‍🏫 Author
 Anshul [@<your-github-username>]
-B.Tech in Data Science | AI & Software Engineering Enthusiast
-📧 Contact: your.email@example.com
+B.Tech in Data Science | AI & Software Engineering  and Machine Learning Enthusiast
+📧 Contact: anshulsharma7162@gmail.com
 
 “Artificial Intelligence is not just about automation — it’s about making systems that think, adapt, and evolve like humans.”
 
 ⭐ If you like this project, give it a star on GitHub!
 
-yaml
-Copy code
-
----
-
-Would you like me to:
-1. 🧩 Generate a **`requirements.txt`** file for this project (Python libs like `opencv-python`, `face-recognition`, `tensorflow`, etc.)  
-2. Or 🖥️ also include a **preview of Flask routes & database schema code snippet** for GitHub completeness?
-
-Which one do you want next?
-
-
-
-
-
-
-
-
-
-
-
-Cha
