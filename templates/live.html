@@ -1,0 +1,317 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Live Attendance Feed{% endblock %}
+
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+
+<div class="flex flex-col lg:flex-row gap-6">
+    <div class="flex-grow bg-white p-4 rounded-lg shadow-lg">
+        <div class="relative w-full aspect-video bg-black rounded-md overflow-hidden">
+            <video id="video" autoplay playsinline class="w-full h-full object-cover"></video>
+            <canvas id="canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+            <div id="loading" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 text-white p-4">
+                <i class="fas fa-spinner fa-spin mr-3"></i> Starting Camera...
+            </div>
+        </div>
+        <div class="mt-4 flex justify-between items-center">
+             <div id="status-box" class="px-4 py-2 rounded-md text-white font-semibold bg-gray-500">
+                Status: Initializing...
+            </div>
+            <a href="{{ url_for('configure_session') }}" class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">
+                <i class="fas fa-cog mr-2"></i>Change Session
+            </a>
+        </div>
+    </div>
+
+    <div class="w-full lg:w-96 bg-white p-4 rounded-lg shadow-lg flex flex-col">
+        <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Live Log</h3>
+        <div id="live-log" class="flex-grow overflow-y-auto space-y-2 pr-2">
+            </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const loadingDiv = document.getElementById('loading');
+        const statusBox = document.getElementById('status-box');
+        const liveLog = document.getElementById('live-log');
+
+        const socket = io();
+        window.frameInterval = null; 
+        window.videoDrawInterval = null; 
+        let lastDrawnFaces = []; 
+
+        socket.on('connect', () => {
+            console.log('Connected to server!');
+            statusBox.textContent = 'Status: Connected';
+            statusBox.className = 'px-4 py-2 rounded-md text-white font-semibold bg-green-500';
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server!');
+            statusBox.textContent = 'Status: Disconnected';
+            statusBox.className = 'px-4 py-2 rounded-md text-white font-semibold bg-red-500';
+            if (window.frameInterval) clearInterval(window.frameInterval);
+            if (window.videoDrawInterval) clearInterval(window.videoDrawInterval); 
+        });
+
+        function startCamera() {
+            loadingDiv.style.display = 'flex';
+            loadingDiv.innerHTML = `<i class="fas fa-spinner fa-spin mr-3"></i> Requesting Camera Access...`;
+            
+            navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 } } })
+                .then(stream => {
+                    video.srcObject = stream;
+                    console.log('Camera stream obtained successfully. Trying to play video...'); 
+                    video.onloadedmetadata = () => {
+                        console.log('Video metadata loaded. Video dimensions:', video.videoWidth, video.videoHeight); 
+                        loadingDiv.style.display = 'none';
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        video.play(); 
+                        console.log('Video element play() called.'); 
+                        
+                        if (window.videoDrawInterval) clearInterval(window.videoDrawInterval);
+                        window.videoDrawInterval = setInterval(() => {
+                            if (!video.paused && !video.ended && video.readyState >= video.HAVE_CURRENT_DATA) {
+                                context.clearRect(0, 0, canvas.width, canvas.height); 
+                                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                                if (lastDrawnFaces.length > 0) {
+                                    drawBoundingBoxes(lastDrawnFaces);
+                                }
+                            }
+                        }, 30); 
+
+                        if (window.frameInterval) clearInterval(window.frameInterval);
+                        window.frameInterval = setInterval(sendFrame, 100); 
+                        console.log('Frame sending interval started (100ms).'); 
+                    };
+                    video.onerror = (e) => { 
+                        console.error('Video element error:', e);
+                        statusBox.textContent = 'Status: Video Error!';
+                        statusBox.className = 'px-4 py-2 rounded-md text-white font-semibold bg-red-500';
+                    };
+                })
+                .catch(err => {
+                    console.error("Error accessing camera via getUserMedia:", err);
+                    const errorMessage = `
+                        <div class="text-center">
+                            <i class="fas fa-exclamation-triangle text-4xl text-yellow-400 mb-4"></i>
+                            <h3 class="text-xl font-semibold">Camera Access Denied or Failed</h3>
+                            <p class="mt-2 text-sm text-gray-300">This application needs access to your camera. Please allow camera access in your browser's site settings and ensure no other app is using the camera.</p>
+                            <button id="retry-camera" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-redo-alt mr-2"></i>Try Again
+                            </button>
+                        </div>`;
+                    loadingDiv.innerHTML = errorMessage;
+                    document.getElementById('retry-camera').addEventListener('click', startCamera);
+                    statusBox.textContent = 'Status: Camera Error!';
+                    statusBox.className = 'px-4 py-2 rounded-md text-white font-semibold bg-red-500';
+                });
+        }
+        
+        startCamera(); 
+
+        function sendFrame() {
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                if (video.videoWidth === 0 || video.videoHeight === 0) {
+                    console.warn('Video dimensions are 0, skipping frame capture. Is camera stuck or not providing frames?'); 
+                    return; 
+                }
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = video.videoWidth; 
+                tempCanvas.height = video.videoHeight; 
+                const tempContext = tempCanvas.getContext('2d');
+                tempContext.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+                const dataURL = tempCanvas.toDataURL('image/jpeg', 0.8); 
+                if (socket.connected) {
+                    socket.emit('image_from_client', dataURL);
+                }
+            } else {
+                // console.log('Video not ready for capturing, current readyState:', video.readyState); 
+            }
+        }
+
+        socket.on('recognition_result', (data) => {
+            console.log('Received recognition_result from server:', data); 
+            if (data.status === 'success' && data.results) {
+                lastDrawnFaces = data.results; 
+                console.log('lastDrawnFaces updated with:', lastDrawnFaces.length, 'faces.'); 
+            } else {
+                lastDrawnFaces = []; 
+                console.log('lastDrawnFaces cleared. Reason:', data.status, data.message); 
+            }
+
+            if (data.period) {
+                statusBox.textContent = `Period: ${data.period}`;
+                statusBox.className = 'px-4 py-2 rounded-md text-white font-semibold bg-blue-600';
+            } else {
+                statusBox.textContent = 'Period: N/A';
+                statusBox.className = 'px-4 py-2 rounded-md text-white font-semibold bg-gray-500';
+            }
+
+            if (data.status === 'error') {
+                console.error("Server error:", data.message);
+                statusBox.textContent = `Error: ${data.message}`;
+                statusBox.className = 'px-4 py-2 rounded-md text-white font-semibold bg-red-500';
+            }
+        });
+
+        socket.on('new_log_entry', (data) => {
+            const logEntry = document.createElement('div');
+            const displayGender = data.gender ? `, ${data.gender}` : '';
+            const displayAge = data.age ? `, ${data.age} yrs` : '';
+
+            logEntry.className = 'flex items-center p-2 bg-green-100 border-l-4 border-green-500 rounded';
+            logEntry.innerHTML = `
+                <i class="fas fa-check-circle text-green-600 mr-3"></i>
+                <div>
+                    <p class="font-semibold text-gray-800">
+                        ${data.name} (${data.roll_no})
+                        <span class="text-sm text-gray-600">${displayGender}${displayAge}</span>
+                    </p>
+                    <p class="text-xs text-gray-600">Logged at ${data.time}</p>
+                </div>`;
+            liveLog.prepend(logEntry);
+            if (liveLog.children.length > 20) {
+                liveLog.removeChild(liveLog.lastChild);
+            }
+        });
+
+        function drawBoundingBoxes(results) {
+            const scaleX = canvas.width / video.videoWidth; 
+            const scaleY = canvas.height / video.videoHeight; 
+            const textPadding = 5; 
+            const lineHeight = 18; 
+
+            results.forEach(res => {
+                const [top, right, bottom, left] = res.location;
+                
+                const sTop = top * scaleY;
+                const sRight = right * scaleX;
+                const sBottom = bottom * scaleY;
+                const sLeft = left * scaleX;
+
+                let color;
+                let displayLines = [];
+
+                if (res.name === 'Unknown') {
+                    color = '#EF4444'; // Red for unknown
+                    displayLines.push('Unknown Face');
+                    displayLines.push('No match found');
+                } else {
+                    let mainInfo = `${res.name}`;
+                    if (res.roll_no && res.roll_no !== 'N/A') {
+                        mainInfo += ` (${res.roll_no})`;
+                    }
+                    displayLines.push(mainInfo);
+
+                    let secondaryInfo = [];
+                    if (res.gender && res.gender !== 'N/A') {
+                        secondaryInfo.push(res.gender);
+                    }
+                    if (res.age && res.age !== 'N/A') {
+                        secondaryInfo.push(`${res.age} yrs`);
+                    }
+                    if (res.distance !== undefined && res.distance !== null) { 
+                        secondaryInfo.push(`Dist: ${res.distance.toFixed(2)}`); 
+                    } else {
+                         secondaryInfo.push('Dist: N/A');
+                    }
+                    
+                    if (secondaryInfo.length > 0) {
+                        displayLines.push(secondaryInfo.join(', '));
+                    }
+
+                    // --- NEW: Liveness Status Display ---
+                    if (res.liveness_status && res.liveness_status !== 'N/A') {
+                        let livenessColor = 'white'; // Default text color
+                        if (res.liveness_status.includes('Blink Detected') || res.liveness_status.includes('Eyes Open')) {
+                            livenessColor = '#CCFFCC'; // Light green for positive liveness
+                            // You might want to change the box color temporarily for a "Liveness Pass" flash
+                            // color = '#00FF00'; // Green flash
+                        } else if (res.liveness_status.includes('Liveness Check Failed') || res.liveness_status.includes('Eyes Closed/Low EAR')) {
+                            livenessColor = '#FFCCCC'; // Light red for negative liveness
+                            // color = '#FF0000'; // Red flash
+                        }
+                        displayLines.push(`Liveness: ${res.liveness_status}`);
+                        // No explicit color change for the Liveness line in this snippet, but you can add it.
+                    }
+                    // --- END NEW Liveness Display ---
+                    
+                    switch(res.status) {
+                        case 'logged':
+                            color = '#10B981'; // Green
+                            displayLines.push('Status: Logged!');
+                            break;
+                        case 'cooldown':
+                            color = '#F59E0B'; // Amber
+                            displayLines.push('Status: Cooldown');
+                            break;
+                        case 'already_logged':
+                            color = '#6B7280'; // Gray
+                            displayLines.push('Status: Already Logged');
+                            break;
+                        case 'filter_mismatch':
+                            color = '#8B5CF6'; // Violet
+                            displayLines.push('Status: Wrong Class');
+                            break;
+                        case 'no_active_period':
+                            color = '#FFD700'; // Gold, for no active period
+                            displayLines.push('Status: No Active Period');
+                            break;
+                        case 'session_not_configured':
+                            color = '#DC2626'; // Red, critical error
+                            displayLines.push('Status: Session NOT Configured');
+                            break;
+                        case 'db_mismatch': 
+                             color = '#FFA500'; // Orange
+                             displayLines.push('Status: DB Mismatch!');
+                             break;
+                        case 'Liveness Check Failed': // Handle the new backend status
+                            color = '#DC2626'; // Red
+                            displayLines.push('Status: Liveness Check Failed!');
+                            break;
+                        default:
+                            color = '#3B82F6'; // Blue for general/default
+                            displayLines.push('Status: Detected');
+                    }
+                }
+
+                context.strokeStyle = color;
+                context.lineWidth = 3;
+                context.strokeRect(sLeft, sTop, sRight - sLeft, sBottom - sTop);
+
+                context.font = `${lineHeight - 2}px Inter, sans-serif`;
+                let maxTextWidth = 0;
+                displayLines.forEach(line => {
+                    const currentWidth = context.measureText(line).width;
+                    if (currentWidth > maxTextWidth) {
+                        maxTextWidth = currentWidth;
+                    }
+                });
+
+                const textBlockHeight = (displayLines.length * lineHeight) + (textPadding * 2);
+                const textBlockWidth = maxTextWidth + (textPadding * 2);
+
+                const actualLeft = sLeft;
+                const actualBottom = sBottom;
+
+                context.fillStyle = color;
+                context.fillRect(actualLeft, actualBottom, textBlockWidth, textBlockHeight);
+                
+                context.fillStyle = 'white';
+                context.textBaseline = 'top';
+
+                displayLines.forEach((line, index) => {
+                    context.fillText(line, actualLeft + textPadding, actualBottom + textPadding + (index * lineHeight));
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

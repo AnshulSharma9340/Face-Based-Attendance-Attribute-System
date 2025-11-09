@@ -1,0 +1,12 @@
+<data>
+    <student>
+        <name>Alice</name>
+        <age>23</age>
+        <grade>A</grade>
+    </student>
+    <student>
+        <name>Bob</name>
+        <age>30</age>
+        <grade>B</grade>
+    </student>
+</data>

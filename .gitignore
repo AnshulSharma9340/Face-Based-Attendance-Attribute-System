@@ -1,0 +1,11 @@
+# Ignore large models and unnecessary files
+*.h5
+*.model
+*.weights
+*.pkl
+*.zip
+*.rar
+__pycache__/
+venv/
+.env
+.DS_Store

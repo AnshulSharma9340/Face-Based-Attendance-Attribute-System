@@ -1,0 +1,224 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Attendance Log{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Filter Attendance Records</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="mb-4">
+                {% for category, message in messages %}
+                    <div class="p-3 rounded-md {% if category == 'success' %}bg-green-100 text-green-700{% elif category == 'danger' %}bg-red-100 text-red-700{% elif category == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="GET" action="{{ url_for('view_attendance_log') }}" class="mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div>
+                <label for="branch" class="block text-gray-700 text-sm font-bold mb-2">Branch:</label>
+                <select name="branch" id="branch" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="all">All Branches</option>
+                    {% for b in available_branches %}
+                        <option value="{{ b }}" {% if filters.branch == b %}selected{% endif %}>{{ b }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="semester" class="block text-gray-700 text-sm font-bold mb-2">Semester:</label>
+                <select name="semester" id="semester" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="all">All Semesters</option>
+                    {% for s in available_semesters %}
+                        <option value="{{ s }}" {% if filters.semester|string == s|string %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="period_id" class="block text-gray-700 text-sm font-bold mb-2">Period:</label>
+                <select name="period_id" id="period_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="all">All Periods</option>
+                    {% for p in schedule_periods %}
+                        <option value="{{ p.period_id }}" {% if filters.period_id|string == p.period_id|string %}selected{% endif %}>{{ p.period_name }} ({{ p.start_time }} - {{ p.end_time }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="date" class="block text-gray-700 text-sm font-bold mb-2">Date:</label>
+                <input type="date" name="date" id="date" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ filters.date }}">
+            </div>
+            <div>
+                <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Status:</label>
+                <select name="status" id="status" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="all" {% if filters.status == 'all' %}selected{% endif %}>All</option>
+                    <option value="present" {% if filters.status == 'present' %}selected{% endif %}>Present</option>
+                    <option value="absent" {% if filters.status == 'absent' %}selected{% endif %}>Absent</option>
+                </select>
+            </div>
+            <div class="col-span-full lg:col-span-1 flex items-end justify-end space-x-2 mt-4 lg:mt-0">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex-grow">
+                    <i class="fas fa-filter mr-2"></i> Filter
+                </button>
+                <a href="{{ url_for('export_attendance', branch=filters.branch, semester=filters.semester, period_id=filters.period_id, date=filters.date, status=filters.status) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex-grow">
+                    <i class="fas fa-file-excel mr-2"></i> Export
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-800">Attendance Records</h3>
+        <button id="generate-insights-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center">
+            <i class="fas fa-lightbulb mr-2"></i> Generate Insights
+        </button>
+    </div>
+
+    <div id="insights-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-11/12 md:w-1/2 relative">
+            <h3 class="text-2xl font-bold mb-4">Attendance Insights</h3>
+            <div id="insights-content" class="mb-4 text-gray-700 prose max-w-none">
+                <p>Loading insights...</p>
+            </div>
+            <button id="close-insights-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl font-bold">
+                &times;
+            </button>
+        </div>
+    </div>
+
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-300">
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left text-gray-700">STATUS</th> <th class="py-2 px-4 border-b text-left text-gray-700">ROLL NO</th>
+                    <th class="py-2 px-4 border-b text-left text-gray-700">NAME</th>
+                    <th class="py-2 px-4 border-b text-left text-gray-700">BRANCH</th> <th class="py-2 px-4 border-b text-left text-gray-700">SEMESTER</th> <th class="py-2 px-4 border-b text-left text-gray-700">PERIOD</th>
+                    <th class="py-2 px-4 border-b text-left text-gray-700">PROFESSOR</th>
+                    <th class="py-2 px-4 border-b text-left text-gray-700">TIMESTAMP</th>
+                    {% if session.role == 'admin' %}
+                    <th class="py-2 px-4 border-b text-left text-gray-700">ACTIONS</th> {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr class="hover:bg-gray-50">
+                    <td class="py-2 px-4 border-b">
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold
+                            {% if log.status == 'Present' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ log.status }}
+                        </span>
+                    </td>
+                    <td class="py-2 px-4 border-b">{{ log.student_roll_no }}</td>
+                    <td class="py-2 px-4 border-b">{{ log.student_name }}</td>
+                    <td class="py-2 px-4 border-b">{{ log.student_branch if log.student_branch else 'N/A' }}</td>
+                    <td class="py-2 px-4 border-b">{{ log.student_semester if log.student_semester else 'N/A' }}</td>
+                    <td class="py-2 px-4 border-b">{{ log.period_name }}</td>
+                    <td class="py-2 px-4 border-b">{{ log.prof_name }}</td>
+                    <td class="py-2 px-4 border-b">{{ log.timestamp }}</td>
+                    {% if session.role == 'admin' %}
+                    <td class="py-2 px-4 border-b">
+                        {% if log.log_id %} {# Only show delete for actual logged entries #}
+                        <form action="{{ url_for('delete_log_entry', log_id=log.log_id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this attendance record?');" class="inline-block">
+                            <button type="submit" class="text-red-600 hover:text-red-900 focus:outline-none">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                        {% else %}
+                        N/A {# For 'Absent' rows #}
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" class="py-4 px-4 text-center text-gray-500">No attendance records found for the selected filters.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const generateInsightsBtn = document.getElementById('generate-insights-btn');
+    const insightsModal = document.getElementById('insights-modal');
+    const insightsContent = document.getElementById('insights-content');
+    const closeInsightsModal = document.getElementById('close-insights-modal');
+
+    generateInsightsBtn.addEventListener('click', function() {
+        insightsModal.classList.remove('hidden');
+        insightsContent.innerHTML = '<p>Loading insights...</p>'; // Reset content
+
+        // Collect current filter values
+        const branch = document.getElementById('branch').value;
+        const semester = document.getElementById('semester').value;
+        const period_id = document.getElementById('period_id').value;
+        const date = document.getElementById('date').value;
+        const status = document.getElementById('status').value; // New: Get status filter
+
+        fetch('/generate_attendance_insights', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                branch: branch, 
+                semester: semester, 
+                period_id: period_id, 
+                date: date,
+                status: status // Pass status filter
+            }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                // If response is not OK (e.g., 500 server error), parse as text for specific error message
+                return response.text().then(text => { throw new Error(text) });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                insightsContent.innerHTML = data.insights;
+            } else {
+                insightsContent.innerHTML = `<p class="text-red-600">Error generating insights: ${data.message}</p>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            try {
+                const errorJson = JSON.parse(error.message);
+                insightsContent.innerHTML = `<p class="text-red-600">Network or Server Error: ${errorJson.message || error.message}</p>`;
+            } catch (e) {
+                insightsContent.innerHTML = `<p class="text-red-600">Network or Server Error: ${error.message}</p>`;
+            }
+        });
+    });
+
+    closeInsightsModal.addEventListener('click', function() {
+        insightsModal.classList.add('hidden');
+    });
+
+    // Close modal if clicked outside content
+    insightsModal.addEventListener('click', function(event) {
+        if (event.target === insightsModal) {
+            insightsModal.classList.add('hidden');
+        }
+    });
+
+    // Set today's date as default for date filter if no date is selected
+    const dateInput = document.getElementById('date');
+    if (!dateInput.value) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const dd = String(today.getDate()).padStart(2, '0');
+        dateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+});
+</script>
+{% endblock %}

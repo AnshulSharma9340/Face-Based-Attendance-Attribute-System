@@ -1,0 +1,160 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Manual Attendance{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Mark Manual Attendance</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="mb-4">
+                {% for category, message in messages %}
+                    <div class="p-3 rounded-md {% if category == 'success' %}bg-green-100 text-green-700{% elif category == 'danger' %}bg-red-100 text-red-700{% elif category == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="GET" action="{{ url_for('manual_attendance') }}" class="mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div>
+                <label for="branch" class="block text-gray-700 text-sm font-bold mb-2">Filter by Branch:</label>
+                <select name="branch" id="branch" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="all">All Branches</option>
+                    {% for b in available_branches %}
+                        <option value="{{ b }}" {% if selected_branch == b %}selected{% endif %}>{{ b }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="semester" class="block text-gray-700 text-sm font-bold mb-2">Filter by Semester:</label>
+                <select name="semester" id="semester" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="all">All Semesters</option>
+                    {% for s in available_semesters %}
+                        <option value="{{ s }}" {% if selected_semester|string == s|string %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="flex items-end space-x-2">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    <i class="fas fa-filter mr-2"></i> Apply Filters
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <form method="POST" action="{{ url_for('manual_attendance') }}" id="markAttendanceForm">
+        <input type="hidden" name="current_filter_branch" value="{{ selected_branch if selected_branch else 'all' }}">
+        <input type="hidden" name="current_filter_semester" value="{{ selected_semester if selected_semester else 'all' }}">
+        <input type="hidden" name="current_filter_period_id" value="{{ selected_period_id if selected_period_id else 'all' }}">
+
+        <div class="mb-6">
+            <label for="period_id" class="block text-gray-700 text-sm font-bold mb-2">Select Period to Mark Attendance For:</label>
+            <select name="period_id" id="period_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                <option value="">-- Select a Period --</option>
+                {% for period in schedule %}
+                    <option value="{{ period.period_id }}" {% if selected_period_id|string == period.period_id|string %}selected{% endif %}>
+                        {{ period.period_name }} ({{ period.start_time }} - {{ period.end_time }}) - Prof: {{ period.prof_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Students (Filtered)</h3>
+        <div class="overflow-x-auto mb-6">
+            {% if students %}
+            <table class="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b text-left text-gray-700">
+                            <input type="checkbox" id="selectAllCheckbox">
+                        </th>
+                        <th class="py-2 px-4 border-b text-left text-gray-700">Roll No</th>
+                        <th class="py-2 px-4 border-b text-left text-gray-700">Name</th>
+                        <th class="py-2 px-4 border-b text-left text-gray-700">Branch</th>
+                        <th class="py-2 px-4 border-b text-left text-gray-700">Semester</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-2 px-4 border-b">
+                            <input type="checkbox" name="roll_nos" value="{{ student.roll_no }}" 
+                                   {% if student.roll_no in form_data.getlist('roll_nos') %}checked{% endif %} 
+                                   class="student-checkbox">
+                        </td>
+                        <td class="py-2 px-4 border-b">{{ student.roll_no }}</td>
+                        <td class="py-2 px-4 border-b">{{ student.name }}</td>
+                        <td class="py-2 px-4 border-b">{{ student.branch }}</td>
+                        <td class="py-2 px-4 border-b">{{ student.semester }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-gray-500">No students found matching your filters. Please adjust filters or add students.</p>
+            {% endif %}
+        </div>
+
+        <div class="flex items-center justify-start space-x-4">
+            <button type="submit" name="action" value="mark_attendance" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <i class="fas fa-check-circle mr-2"></i> Mark Selected Present
+            </button>
+            
+            <button type="button" id="markAllPresentBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <i class="fas fa-check-square mr-2"></i> Select All
+            </button>
+
+            <a href="{{ url_for('admin_dashboard') }}" class="inline-block align-baseline font-bold text-sm text-gray-600 hover:text-gray-800">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+        const studentCheckboxes = document.querySelectorAll('.student-checkbox');
+        const markAllPresentBtn = document.getElementById('markAllPresentBtn'); // Still refers to the button
+        const markAttendanceForm = document.getElementById('markAttendanceForm');
+
+        // Logic for "Select All" checkbox in table header
+        if (selectAllCheckbox) { 
+            selectAllCheckbox.addEventListener('change', function() {
+                studentCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+            });
+        }
+
+        // Logic for the standalone "Select All" button
+        if (markAllPresentBtn) {
+            markAllPresentBtn.addEventListener('click', function() {
+                // Check all visible student checkboxes
+                studentCheckboxes.forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+
+                // NO LONGER submits the form automatically. 
+                // It only selects all. User must click "Mark Selected Present" now.
+                // If you want it to submit immediately, uncomment the lines below:
+                /*
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'mark_attendance'; 
+                markAttendanceForm.appendChild(actionInput);
+                markAttendanceForm.submit();
+                */
+
+                // Flash a message that students are selected, prompt user to click "Mark Selected Present"
+                alert("All students are now selected. Click 'Mark Selected Present' to log attendance.");
+            });
+        }
+    });
+</script>
+{% endblock %}

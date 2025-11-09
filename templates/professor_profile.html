@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Professor Profile{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+    <div class="flex items-center space-x-6 mb-8 border-b pb-4">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center bg-gray-100">
+            {% if professor.photo_data %}
+            <img src="data:image/jpeg;base64,{{ professor.photo_data }}" alt="{{ professor.name }}'s Photo" class="w-full h-full object-cover">
+            {% else %}
+            <i class="fas fa-user-circle text-gray-400 text-6xl"></i> {# Placeholder icon if no photo #}
+            {% endif %}
+        </div>
+        <div>
+            <h2 class="text-3xl font-bold text-gray-900">{{ professor.name }}</h2>
+            <p class="text-gray-600">Professor ID: {{ professor.prof_id }}</p>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="mb-4">
+                {% for category, message in messages %}
+                    <div class="p-3 rounded-md {% if category == 'success' %}bg-green-100 text-green-700{% elif category == 'danger' %}bg-red-100 text-red-700{% elif category == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3 border-b pb-2">Contact & Department</h3>
+            <p class="mb-2"><strong class="text-gray-700">Department:</strong> {{ professor.department }}</p>
+            <p class="mb-2"><strong class="text-gray-700">Email:</strong> {{ professor.email }}</p>
+            <p class="mb-2"><strong class="text-gray-700">Mobile:</strong> {{ professor.mobile }}</p>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3 border-b pb-2">Qualifications & Experience</h3>
+            <p class="mb-2"><strong class="text-gray-700">Qualification:</strong> {{ professor.qualification }}</p>
+            <p class="mb-2"><strong class="text-gray-700">Experience:</strong> {{ professor.experience }}</p>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-3 border-b pb-2">Achievements & Other Details</h3>
+        <p class="mb-2"><strong class="text-gray-700">Achievements:</strong> {{ professor.achievements }}</p>
+        <p class="mb-2"><strong class="text-gray-700">Other Details:</strong> {{ professor.others }}</p>
+    </div>
+
+    <div class="flex justify-start space-x-4">
+        <a href="{{ url_for('edit_professor_profile', prof_id=professor.prof_id) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center">
+            <i class="fas fa-edit mr-2"></i>Edit Profile
+        </a>
+        <a href="{{ url_for('view_professors') }}" class="bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center">
+            <i class="fas fa-arrow-alt-circle-left mr-2"></i>Back to Professors
+        </a>
+    </div>
+</div>
+{% endblock %}

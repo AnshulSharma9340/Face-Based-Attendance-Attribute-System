@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Face Attendance System{% endblock %}
+
+{% block head_extra %}
+<style>
+    /* Specific styles for dashboard cards, overriding general section-card if necessary */
+    .dashboard-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        text-align: center;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer; /* Indicate clickability */
+    }
+    .dashboard-card:hover {
+        transform: translateY(-5px); /* Lift effect */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+    }
+    .dashboard-card h3 {
+        font-size: 1.5em;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    .dashboard-card .count {
+        font-size: 2.8em;
+        font-weight: bold;
+        color: #007bff; /* Primary blue for counts */
+        margin-top: 5px;
+    }
+    .card-icon {
+        font-size: 3em;
+        color: #6c757d; /* Muted color for icons */
+        margin-bottom: 15px;
+    }
+    /* Grid layout for dashboard cards */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+        gap: 30px; /* Space between cards */
+        padding: 30px 0;
+    }
+    /* Welcome message styling */
+    .welcome-message {
+        background-color: #e9f5ff; /* Light blue background */
+        border-left: 5px solid #007bff; /* Blue left border */
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        font-size: 1.1em;
+        color: #333;
+    }
+    .welcome-message h2 {
+        color: #0056b3;
+        margin-bottom: 10px;
+    }
+    /* Style for the clickable card link */
+    .dashboard-link {
+        text-decoration: none; /* Remove underline from links */
+        color: inherit; /* Inherit text color from parent */
+        display: block; /* Make the entire link block clickable */
+        height: 100%; /* Make the link fill the card height */
+        width: 100%; /* Make the link fill the card width */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="welcome-message">
+        <h2>Welcome to Your Attendance Dashboard!</h2>
+        <p>Get a quick overview of your system's vital statistics. Manage students, professors, schedules, and attendance logs from the navigation menu.</p>
+    </div>
+
+    <div class="dashboard-grid">
+        {# Total Students Card #}
+        <div class="dashboard-card">
+            <a href="{{ url_for('view_students') }}" class="dashboard-link">
+                <i class="fas fa-users card-icon"></i>
+                <h3>Total Students</h3>
+                <div class="count">{{ total_students }}</div>
+            </a>
+        </div>
+
+        {# Total Professors Card #}
+        <div class="dashboard-card">
+            <a href="{{ url_for('view_professors') }}" class="dashboard-link">
+                <i class="fas fa-chalkboard-teacher card-icon"></i>
+                <h3>Total Professors</h3>
+                <div class="count">{{ total_professors }}</div>
+            </a>
+        </div>
+
+        {# Scheduled Periods Card #}
+        <div class="dashboard-card">
+            <a href="{{ url_for('manage_schedule') }}" class="dashboard-link">
+                <i class="fas fa-calendar-alt card-icon"></i>
+                <h3>Scheduled Periods</h3>
+                <div class="count">{{ total_periods }}</div>
+            </a>
+        </div>
+
+        {# Today's Attendance Logs Card #}
+        <div class="dashboard-card">
+            <a href="{{ url_for('view_attendance_log') }}" class="dashboard-link">
+                <i class="fas fa-clipboard-check card-icon"></i>
+                <h3>Today's Attendance Logs</h3>
+                <div class="count">{{ today_attendance }}</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12 text-center">
+            <p class="lead">Use the navigation bar above to manage different sections of the system.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

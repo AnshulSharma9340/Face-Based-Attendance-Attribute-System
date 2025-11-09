@@ -1,0 +1,271 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Edit Professor Profile{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Edit Professor Profile</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="mb-4">
+                {% for category, message in messages %}
+                    <div class="p-3 rounded-md {% if category == 'success' %}bg-green-100 text-green-700{% elif category == 'danger' %}bg-red-100 text-red-700{% elif category == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('edit_professor_profile', prof_id=professor.prof_id) }}" enctype="multipart/form-data" id="editProfessorForm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <div class="mb-4">
+                    <label for="prof_id" class="block text-gray-700 text-sm font-bold mb-2">Professor ID:</label>
+                    <input type="text" id="prof_id" name="prof_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-100 cursor-not-allowed" value="{{ professor.prof_id }}" readonly>
+                </div>
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
+                    <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ professor.name }}" required>
+                </div>
+                <div class="mb-4">
+                    <label for="department" class="block text-gray-700 text-sm font-bold mb-2">Department:</label>
+                    <input type="text" id="department" name="department" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ professor.department }}" required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ professor.email }}">
+                </div>
+                <div class="mb-4">
+                    <label for="mobile" class="block text-gray-700 text-sm font-bold mb-2">Mobile:</label>
+                    <input type="text" id="mobile" name="mobile" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ professor.mobile }}">
+                </div>
+            </div>
+
+            <div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Professor Photo:</label>
+                    <div class="flex items-center justify-center border border-gray-300 rounded-lg p-2 mb-4 h-48 bg-gray-100 overflow-hidden">
+                        <img id="photo-preview" src="{{ 'data:image/jpeg;base64,' + professor.photo_data if professor.photo_data else '#' }}" alt="Photo Preview" class="max-w-full max-h-full object-contain {% if not professor.photo_data %}hidden{% endif %}">
+                        <span id="no-photo-text" class="text-gray-500 {% if professor.photo_data %}hidden{% endif %}">No Photo Selected</span>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <button type="button" id="upload-file-btn" class="flex-1 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                            Upload New File
+                        </button>
+                        <button type="button" id="capture-camera-btn" class="flex-1 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+                            Capture New from Camera
+                        </button>
+                        {% if professor.photo_data %}
+                        <button type="button" id="keep-current-btn" class="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                            Keep Current Photo
+                        </button>
+                        <button type="button" id="clear-photo-btn" class="flex-1 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
+                            Clear Photo
+                        </button>
+                        {% endif %}
+                    </div>
+
+                    <input type="file" id="photo_file" name="photo_file" accept="image/*" class="hidden">
+                    <input type="hidden" id="photo_data_capture" name="photo_data_capture">
+                    <input type="hidden" id="photo_upload_method" name="photo_upload_method" value="{% if professor.photo_data %}keep_current{% else %}{% endif %}">
+                    <div id="camera-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white p-6 rounded-lg shadow-xl relative">
+                            <h3 class="text-xl font-bold mb-4">Capture Photo</h3>
+                            <video id="camera-feed" class="w-96 h-72 bg-gray-200 rounded-md mb-4 object-cover"></video>
+                            <canvas id="camera-canvas" class="hidden"></canvas>
+                            <div class="flex justify-between">
+                                <button type="button" id="capture-btn" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                                    Take Photo
+                                </button>
+                                <button type="button" id="cancel-capture-btn" class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="qualification" class="block text-gray-700 text-sm font-bold mb-2">Qualification:</label>
+                    <input type="text" id="qualification" name="qualification" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ professor.qualification }}">
+                </div>
+                <div class="mb-4">
+                    <label for="experience" class="block text-gray-700 text-sm font-bold mb-2">Experience:</label>
+                    <input type="text" id="experience" name="experience" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ professor.experience }}">
+                </div>
+                <div class="mb-4">
+                    <label for="achievements" class="block text-gray-700 text-sm font-bold mb-2">Achievements:</label>
+                    <textarea id="achievements" name="achievements" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ professor.achievements }}</textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="others" class="block text-gray-700 text-sm font-bold mb-2">Other Info:</label>
+                    <textarea id="others" name="others" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ professor.others }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between mt-6">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Update Profile
+            </button>
+            <a href="{{ url_for('view_professor_profile', prof_id=professor.prof_id) }}" class="inline-block align-baseline font-bold text-sm text-gray-600 hover:text-gray-800">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('editProfessorForm'); // Changed from addProfessorForm
+        const photoFileInput = document.getElementById('photo_file');
+        const photoPreview = document.getElementById('photo-preview');
+        const noPhotoText = document.getElementById('no-photo-text');
+        const uploadFileBtn = document.getElementById('upload-file-btn');
+        const captureCameraBtn = document.getElementById('capture-camera-btn');
+        const photoUploadMethodInput = document.getElementById('photo_upload_method');
+
+        const cameraModal = document.getElementById('camera-modal');
+        const cameraFeed = document.getElementById('camera-feed');
+        const cameraCanvas = document.getElementById('camera-canvas');
+        const captureBtn = document.getElementById('capture-btn');
+        const cancelCaptureBtn = document.getElementById('cancel-capture-btn');
+        const photoDataCaptureInput = document.getElementById('photo_data_capture');
+
+        // New buttons for edit mode
+        const keepCurrentBtn = document.getElementById('keep-current-btn');
+        const clearPhotoBtn = document.getElementById('clear-photo-btn');
+
+
+        let cameraStream = null; // To hold the media stream
+
+        function showPhotoPreview(src) {
+            photoPreview.src = src;
+            photoPreview.classList.remove('hidden');
+            noPhotoText.classList.add('hidden');
+        }
+
+        function clearPhotoData() {
+            photoPreview.src = '#';
+            photoPreview.classList.add('hidden');
+            noPhotoText.classList.remove('hidden');
+            photoDataCaptureInput.value = ''; // Clear hidden input for camera
+            photoFileInput.value = ''; // Clear file input
+            // photoUploadMethodInput.value = ''; // Don't clear method directly, set to clear_photo or keep_current instead
+        }
+
+        // --- File Upload Logic ---
+        uploadFileBtn.addEventListener('click', () => {
+            photoFileInput.click(); 
+        });
+
+        photoFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    showPhotoPreview(e.target.result);
+                    photoUploadMethodInput.value = 'file_upload'; 
+                    photoDataCaptureInput.value = ''; 
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // If user opens dialog and cancels, keep current state unless a new method is explicitly selected
+                // Check if there was an existing photo or previous camera capture
+                if (!photoPreview.classList.contains('hidden') || photoDataCaptureInput.value !== '') {
+                    // Do nothing, keep previous selection if file dialog was cancelled.
+                } else {
+                    clearPhotoData(); // Only clear if no photo was present before
+                }
+            }
+        });
+
+        // --- Camera Capture Logic ---
+        captureCameraBtn.addEventListener('click', async () => {
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraFeed.srcObject = cameraStream;
+                cameraModal.classList.remove('hidden');
+            } catch (err) {
+                console.error("Error accessing camera for capture:", err);
+                alert("Could not access camera. Please ensure permissions are granted and no other app is using it.");
+            }
+        });
+
+        captureBtn.addEventListener('click', () => {
+            if (cameraStream) {
+                const context = cameraCanvas.getContext('2d');
+                cameraCanvas.width = cameraFeed.videoWidth;
+                cameraCanvas.height = cameraFeed.videoHeight;
+                context.drawImage(cameraFeed, 0, 0, cameraCanvas.width, cameraCanvas.height);
+                const dataUrl = cameraCanvas.toDataURL('image/jpeg', 0.9); 
+                
+                showPhotoPreview(dataUrl);
+                photoDataCaptureInput.value = dataUrl; 
+                photoUploadMethodInput.value = 'camera_capture'; 
+                photoFileInput.value = ''; 
+
+                stopCameraStream();
+                cameraModal.classList.add('hidden');
+            }
+        });
+
+        cancelCaptureBtn.addEventListener('click', () => {
+            stopCameraStream();
+            cameraModal.classList.add('hidden');
+        });
+
+        function stopCameraStream() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+        }
+
+        // --- Edit-specific buttons ---
+        if (keepCurrentBtn) { // These buttons only exist if professor.photo_data is true
+            keepCurrentBtn.addEventListener('click', () => {
+                photoUploadMethodInput.value = 'keep_current';
+                photoDataCaptureInput.value = ''; // Ensure no new data is sent
+                photoFileInput.value = '';
+                // The preview should already show the current photo if it existed
+            });
+        }
+        
+        if (clearPhotoBtn) {
+            clearPhotoBtn.addEventListener('click', () => {
+                clearPhotoData(); // Clear the visual preview
+                photoUploadMethodInput.value = 'clear_photo'; // Explicitly tell backend to clear
+                // No need to clear photoDataCaptureInput or photoFileInput as method will override
+            });
+        }
+
+        // --- Form Submission Logic ---
+        form.addEventListener('submit', (event) => {
+            // Basic validation for photo presence IF a new photo method is chosen and no data
+            if (photoUploadMethodInput.value === 'file_upload' && photoFileInput.files.length === 0) {
+                 alert("You selected 'Upload New File' but no file was chosen. Please select a file or choose another option.");
+                 event.preventDefault();
+                 return;
+            }
+
+            if (photoUploadMethodInput.value === 'camera_capture' && photoDataCaptureInput.value === '') {
+                alert("You selected 'Capture from Camera' but no photo was captured. Please capture a photo or choose another option.");
+                event.preventDefault();
+                return;
+            }
+            // No validation needed for 'keep_current' or 'clear_photo' as their state is managed by the input value.
+        });
+
+        // Initialize photo preview on page load for edit_professor_profile
+        const initialPhotoSrc = photoPreview.src;
+        if (initialPhotoSrc && initialPhotoSrc !== window.location.href + '#') { // Check if a valid initial image src exists
+             photoPreview.classList.remove('hidden');
+             noPhotoText.classList.add('hidden');
+        }
+    });
+</script>
+{% endblock %}

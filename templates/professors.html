@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Registered Professors</h1>
+    <div class="section-card"> {# This div adds the 3D 'card' look #}
+        <table>
+            <thead>
+                <tr>
+                    <th>Professor ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Actions</th>
+                    <th>View Profile</th> {# Column for View Profile Link #}
+                </tr>
+            </thead>
+            <tbody>
+                {# Loop through professors data passed from Flask #}
+                {% if professors %}
+                    {% for professor in professors %}
+                    <tr>
+                        <td>{{ professor.prof_id }}</td> 
+                        <td>{{ professor.name }}</td>
+                        <td>{{ professor.department }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_professor', prof_id=professor.prof_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete Professor {{ professor.name }}? This cannot be undone and may prevent deletion if they are assigned to periods or have attendance records.');">
+                                <button type="submit" class="button-red small-button">Delete</button>
+                            </form>
+                        </td>
+                        <td>
+                            {# Link to Professor Profile Page #}
+                            <a href="{{ url_for('view_professor_profile', prof_id=professor.prof_id) }}" class="button-green small-button">View Profile</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 20px;">No professors registered yet.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url_for('add_professor') }}" class="add-link">Add New Professor</a>
+{% endblock %}

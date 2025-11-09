@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Student{% endblock %}
+
+{% block content %}
+    <h1>Edit Student: {{ student.name }} ({{ student.roll_no }})</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('edit_student', roll_no=student.roll_no) }}" enctype="multipart/form-data" class="form-container">
+        {# Hidden field for original roll_no in case it changes, but usually PKs are immutable #}
+        <input type="hidden" name="original_roll_no" value="{{ student.roll_no }}">
+
+        <label for="roll_no">Roll Number:</label>
+        <input type="text" id="roll_no" name="roll_no" value="{{ request.form.get('roll_no', student.roll_no) }}" readonly> {# Roll no usually readonly, cannot be changed once added #}
+        <span class="help-text">Roll Number cannot be changed.</span>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ request.form.get('name', student.name) }}" required>
+
+        <label for="branch">Branch:</label>
+        <input type="text" id="branch" name="branch" value="{{ request.form.get('branch', student.branch) }}" required>
+
+        <label for="semester">Semester:</label>
+        <input type="number" id="semester" name="semester" value="{{ request.form.get('semester', student.semester) }}" min="1" max="10" required>
+
+        <label for="admission_year">Year of Admission:</label>
+        <input type="number" id="admission_year" name="admission_year" value="{{ request.form.get('admission_year', student.admission_year) }}" min="1900" max="{{ current_year + 5 }}" required>
+        <label for="subject">Subject (e.g., Computer Science):</label>
+        <input type="text" id="subject" name="subject" value="{{ request.form.get('subject', student.subject) }}">
+        <span class="help-text">Optional: Specific subject if applicable.</span>
+
+        <hr>
+
+        <h2>Update Face Photo (Optional)</h2>
+        <p>You can update the student's face photo here. If no new photo is provided, the existing one will be retained.</p>
+
+        <div class="radio-group">
+            <input type="radio" id="upload_file" name="photo_upload_method" value="file_upload" checked>
+            <label for="upload_file">Upload Photo File</label>
+            <input type="radio" id="capture_camera" name="photo_upload_method" value="camera_capture">
+            <label for="capture_camera">Capture from Camera</label>
+            <input type="radio" id="keep_current" name="photo_upload_method" value="keep_current">
+            <label for="keep_current">Keep Current Photo</label>
+        </div>
+
+        <div id="file_upload_section">
+            <label for="photo_file">Upload New Photo (JPG/PNG):</label>
+            <input type="file" id="photo_file" name="photo_file" accept="image/jpeg, image/png">
+            {% if student.face_encoding %}
+                <p class="help-text">Current face encoding exists. Uploading a new file will replace it.</p>
+            {% else %}
+                <p class="help-text">No current face encoding. Please upload a photo to enable face recognition.</p>
+            {% endif %}
+        </div>
+
+        <div id="camera_capture_section" style="display:none;">
+            <video id="camera_video_edit" autoplay="true" playsinline style="width: 100%; max-width: 400px; height: auto; border: 1px solid #ccc;"></video>
+            <button type="button" id="capture_button_edit" class="button-primary">Capture Photo</button>
+            <canvas id="camera_canvas_edit" style="display:none;"></canvas>
+            <input type="hidden" id="photo_data_edit" name="photo_data">
+            <p class="help-text">Captured photo will replace the existing one.</p>
+        </div>
+
+        <div id="current_photo_section" style="display:block;">
+            {% if student.face_encoding %}
+                <p>Current face photo is being used. No changes will be made unless you select another option.</p>
+                {# You could render a placeholder for the image here if you stored base64 photo for display #}
+                {# <img src="data:image/jpeg;base64,{{ student.photo_data_if_stored_as_base64 }}" alt="Current Face" style="max-width:200px;"> #}
+            {% else %}
+                <p>No current face encoding available. You must either upload a file or capture from camera.</p>
+            {% endif %}
+        </div>
+
+
+        <button type="submit" class="button-green">Update Student</button>
+        <a href="{{ url_for('view_students') }}" class="button-secondary">Cancel</a>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }} {# Keep any scripts from base.html #}
+    <script>
+        const uploadFileRadio = document.getElementById('upload_file');
+        const captureCameraRadio = document.getElementById('capture_camera');
+        const keepCurrentRadio = document.getElementById('keep_current');
+
+        const fileUploadSection = document.getElementById('file_upload_section');
+        const cameraCaptureSection = document.getElementById('camera_capture_section');
+        const currentPhotoSection = document.getElementById('current_photo_section');
+
+        const cameraVideoEdit = document.getElementById('camera_video_edit');
+        const captureButtonEdit = document.getElementById('capture_button_edit');
+        const cameraCanvasEdit = document.getElementById('camera_canvas_edit');
+        const photoDataEdit = document.getElementById('photo_data_edit');
+
+        let currentStream = null;
+
+        function showSection(sectionId) {
+            fileUploadSection.style.display = 'none';
+            cameraCaptureSection.style.display = 'none';
+            currentPhotoSection.style.display = 'none';
+
+            if (sectionId === 'file_upload_section') {
+                fileUploadSection.style.display = 'block';
+                stopCamera();
+                photoDataEdit.value = ''; // Clear captured data if switching away
+            } else if (sectionId === 'camera_capture_section') {
+                cameraCaptureSection.style.display = 'block';
+                startCameraForCapture();
+            } else if (sectionId === 'current_photo_section') {
+                currentPhotoSection.style.display = 'block';
+                stopCamera();
+                photoDataEdit.value = ''; // Clear captured data if switching away
+            }
+        }
+
+        uploadFileRadio.addEventListener('change', () => showSection('file_upload_section'));
+        captureCameraRadio.addEventListener('change', () => showSection('camera_capture_section'));
+        keepCurrentRadio.addEventListener('change', () => showSection('keep_current_section')); // Note: Corrected to 'keep_current_section' if you want a separate section for visual confirmation
+
+        // Initial setup based on default checked radio (upload_file)
+        showSection('file_upload_section'); 
+
+        async function startCameraForCapture() {
+            if (currentStream) { // If camera is already running, stop it first
+                stopCamera();
+            }
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                cameraVideoEdit.srcObject = currentStream;
+            } catch (err) {
+                console.error("Error accessing camera: ", err);
+                alert("Could not access camera. Please ensure it's connected and permissions are granted.");
+            }
+        }
+
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                cameraVideoEdit.srcObject = null;
+                currentStream = null;
+            }
+        }
+
+        captureButtonEdit.addEventListener('click', () => {
+            if (currentStream) {
+                cameraCanvasEdit.width = cameraVideoEdit.videoWidth;
+                cameraCanvasEdit.height = cameraVideoEdit.videoHeight;
+                cameraCanvasEdit.getContext('2d').drawImage(cameraVideoEdit, 0, 0, cameraCanvasEdit.width, cameraCanvasEdit.height);
+                const imageData = cameraCanvasEdit.toDataURL('image/jpeg', 0.8); // Get image data as base64
+                photoDataEdit.value = imageData; // Set hidden input value
+
+                alert("Photo captured! You can now update student details.");
+                stopCamera(); // Stop camera after capture
+            } else {
+                alert("Camera not active. Please ensure camera is enabled.");
+            }
+        });
+
+        // Ensure camera is stopped when navigating away or on initial load if not capture mode
+        window.addEventListener('beforeunload', stopCamera);
+        // Initially, if the default method is not capture, stop camera (if any browser auto-start behavior)
+        if (!captureCameraRadio.checked) {
+            stopCamera();
+        }
+
+    </script>
+{% endblock %}

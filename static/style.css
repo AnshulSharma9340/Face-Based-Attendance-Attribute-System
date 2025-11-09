@@ -1,0 +1,215 @@
+/* General Body and Base Styles */
+body {
+    font-family: 'Roboto', sans-serif; /* A modern, clean font */
+    background-color: #e0e5ec; /* Light, soft background for a 'neumorphic' base */
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure body takes full viewport height */
+}
+
+/* Page Titles */
+h1 {
+    font-size: 2.2em;
+    color: #3f51b5; /* A strong blue for titles */
+    margin-bottom: 25px;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-size: 1.8em;
+    color: #4CAF50; /* Green for section titles */
+    margin-top: 40px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Container for sections (like "Current Class Schedule", "Add New Period") */
+.section-container {
+    background-color: #e0e5ec; /* Matches body for 'neumorphic' look */
+    border-radius: 20px; /* More rounded corners for softness */
+    padding: 30px;
+    margin: 30px auto; /* Center containers with auto margins */
+    max-width: 900px; /* Max width for readability */
+    box-shadow: 8px 8px 16px #cbced1, /* Bottom-right shadow */
+                -8px -8px 16px #ffffff; /* Top-left highlight */
+    transition: all 0.3s ease-in-out;
+    position: relative; /* For potential internal shadows */
+    overflow: hidden; /* For inner elements like tables */
+}
+
+.section-container:hover {
+    box-shadow: 10px 10px 20px #c2c6ca,
+                -10px -10px 20px #f4f8fc;
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Table Styles - Enhanced 3D Look */
+table {
+    width: 100%;
+    border-collapse: collapse; /* For clean lines */
+    margin-top: 25px;
+    font-size: 0.95em;
+    background-color: #ffffff; /* White background for table content */
+    border-radius: 15px; /* Rounded corners for the table itself */
+    overflow: hidden; /* Ensures rounded corners are visible */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), /* Inner shadow for depth */
+                inset -2px -2px 5px rgba(255, 255, 255, 0.7); /* Inner highlight */
+}
+
+th, td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0; /* Lighter separators */
+}
+
+th {
+    background: linear-gradient(145deg, #f0f5fa, #e6edf5); /* Subtle gradient for headers */
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-top-left-radius: 15px; /* Top corners for headers */
+    border-top-right-radius: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Very subtle shadow under header */
+}
+
+tr:last-child td {
+    border-bottom: none; /* No border for the last row */
+}
+
+tbody tr:hover {
+    background-color: #f5f5f5; /* Light highlight on row hover */
+    transform: scale(1.005); /* Very slight scale for interaction */
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Form Elements (Input, Select, Button) */
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #444;
+}
+
+/* Input Fields and Select Dropdowns */
+input[type="text"],
+input[type="time"], /* Assuming time inputs for HH:MM */
+select {
+    width: calc(100% - 24px); /* Account for padding */
+    padding: 12px;
+    margin-bottom: 20px;
+    border: none; /* Remove default border */
+    border-radius: 10px; /* Softer rounded corners */
+    background-color: #e0e5ec; /* Matches body for integrated look */
+    box-shadow: inset 4px 4px 8px #cbced1, /* Inner shadow for a 'pressed' look */
+                inset -4px -4px 8px #ffffff; /* Inner highlight */
+    font-size: 1em;
+    color: #333;
+    transition: all 0.3s ease-in-out;
+}
+
+input[type="text"]::placeholder {
+    color: #aaa;
+}
+
+input[type="text"]:focus,
+input[type="time"]:focus,
+select:focus {
+    outline: none; /* Remove focus outline */
+    box-shadow: inset 2px 2px 5px #c2c6ca, /* Less pronounced inset when focused */
+                inset -2px -2px 5px #f4f8fc,
+                0 0 0 3px rgba(76, 175, 80, 0.3); /* Green glow for focus */
+    background-color: #f0f5fa; /* Slightly lighter on focus */
+}
+
+/* Buttons - Neumorphic Style */
+.button-green {
+    display: inline-block;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 15px; /* Rounded button */
+    background: linear-gradient(145deg, #6fdc73, #4CAF50); /* Green gradient */
+    color: white;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 6px 6px 12px #9caca0, /* Shadow for depth */
+                -6px -6px 12px #c6f0c8; /* Highlight for lift */
+    transition: all 0.3s ease-in-out;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    outline: none; /* Remove outline on click */
+}
+
+.button-green:hover {
+    background: linear-gradient(145deg, #4CAF50, #6fdc73); /* Reverse gradient on hover */
+    box-shadow: 8px 8px 16px #9caca0,
+                -8px -8px 16px #c6f0c8;
+    transform: translateY(-3px); /* Lift more on hover */
+}
+
+.button-green:active {
+    box-shadow: inset 4px 4px 8px #45a049, /* Inset shadow for pressed effect */
+                inset -4px -4px 8px #7bd37f;
+    transform: translateY(1px); /* Push down on click */
+}
+
+/* Navigation Bar (Assuming .navbar or <nav>) */
+.navbar {
+    background-color: #343a40; /* Dark background */
+    padding: 15px 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Stronger shadow for depth */
+    display: flex;
+    justify-content: center; /* Center nav items */
+    gap: 30px; /* Space between links */
+}
+
+.navbar a {
+    color: #f8f9fa;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 8px; /* Slightly rounded for links */
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 1.05em;
+    position: relative; /* For active indicator */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.navbar a:hover {
+    background-color: rgba(255, 255, 255, 0.15); /* Subtle white overlay on hover */
+    transform: translateY(-2px); /* Lift effect */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.navbar a.active {
+    color: #61dafb; /* Light blue for active link */
+    background-color: rgba(97, 218, 251, 0.1); /* Subtle background for active */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), /* Inner shadow for active button look */
+                inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+    transform: translateY(0); /* No lift for active */
+    border-bottom: 3px solid #61dafb; /* A strong indicator */
+}
+
+/* Link for "Add New Professor" */
+.add-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #007bff; /* Standard link blue */
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+}
+
+.add-link:hover {
+    text-decoration: underline;
+    transform: translateX(5px); /* Slide right on hover */
+}

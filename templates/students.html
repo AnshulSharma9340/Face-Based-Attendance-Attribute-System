@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Manage Students{% endblock %}
+
+{% block content %}
+<style>
+    /* Custom styles for the transparent effect on students page */
+    .students-page-content {
+        background-image: url("{{ url_for('static', filename='images/face_scan_background.png') }}");
+        background-size: cover; /* Cover the entire area */
+        background-position: center; /* Center the image */
+        background-attachment: fixed; /* Keep image fixed when scrolling */
+        border-radius: 1rem; /* Match card radius */
+        overflow: hidden; /* Hide overflow from background image */
+        padding: 2rem; /* Initial padding */
+        min-height: calc(100vh - 120px); /* Ensure it takes up vertical space */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center content horizontally */
+        justify-content: flex-start; /* Align content to the top */
+        position: relative; /* For z-index of inner cards */
+    }
+
+    /* Make inner cards/tables/forms translucent */
+    .students-page-content .section-card,
+    .students-page-content form,
+    .students-page-content table {
+        background: rgba(255, 255, 255, 0.75); /* Translucent white background */
+        backdrop-filter: blur(5px); /* Subtle blur effect */
+        -webkit-backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.8); /* Lighter border */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow for depth */
+        transition: all 0.2s ease-out; /* Keep transitions */
+        z-index: 10; /* Ensure they appear above the background image */
+        position: relative; /* Needed for z-index to work */
+        width: 100%; /* Take full available width within its container */
+        max-width: 800px; /* Limit overall width for readability */
+        margin-bottom: 25px; /* Space between sections */
+    }
+
+    /* Adjust specific elements for better contrast/visibility */
+    .students-page-content h2,
+    .students-page-content h3,
+    .students-page-content label,
+    .students-page-content th,
+    .students-page-content td {
+        color: #333; /* Ensure text is dark enough for contrast */
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3); /* Subtle text shadow for readability */
+    }
+
+    /* Inputs and selects may need slightly higher opacity */
+    .students-page-content input[type="text"],
+    .students-page-content input[type="number"],
+    .students-page-content select {
+        background: rgba(255, 255, 255, 0.85); /* Slightly less translucent inputs */
+        border-color: rgba(255, 255, 255, 0.9);
+    }
+    .students-page-content input[type="text"]::placeholder {
+        color: #666; /* Darker placeholder for better contrast */
+    }
+
+    /* Ensure flash messages remain readable */
+    .students-page-content .alert {
+        background-color: rgba(255, 255, 255, 0.9); /* More opaque for readability */
+        backdrop-filter: blur(0); /* No blur on alerts */
+        border-color: rgba(0, 0, 0, 0.1); /* Default border for alerts */
+        color: inherit; /* Inherit color from the alert type */
+        width: 100%; /* Take full width */
+        max-width: 800px; /* Match form width */
+    }
+
+    /* Add New Student button (ensure it's not affected by .section-card) */
+    .add-student-btn {
+        margin-bottom: 25px; /* Space below button */
+        z-index: 10;
+        position: relative;
+    }
+</style>
+
+<div class="students-page-content">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Filter Students</h2>
+
+    <div class="section-card w-full max-w-2xl mx-auto mb-8">
+        <form method="GET" action="{{ url_for('view_students') }}">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                <div>
+                    <label for="branch" class="block text-gray-700 text-sm font-bold mb-2">Select Branch:</label>
+                    <select name="branch" id="branch" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="all">All Branches</option>
+                        {% for b in available_branches %}
+                            <option value="{{ b }}" {% if selected_branch == b %}selected{% endif %}>{{ b }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="semester" class="block text-gray-700 text-sm font-bold mb-2">Select Semester:</label>
+                    <select name="semester" id="semester" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="all">All Semesters</option>
+                        {% for s in available_semesters %}
+                            <option value="{{ s }}" {% if selected_semester|string == s|string %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="flex items-center justify-end space-x-2 mt-6">
+                <button type="submit" class="button-blue">
+                    <i class="fas fa-filter mr-2"></i> Apply Filters
+                </button>
+                <a href="{{ url_for('view_students') }}" class="button-secondary">
+                    <i class="fas fa-redo mr-2"></i> Clear Filters
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <a href="{{ url_for('add_student') }}" class="button-green add-student-btn">
+        <i class="fas fa-user-plus mr-2"></i> Add New Student
+    </a>
+
+    <div class="section-card w-full max-w-4xl mx-auto">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Student List</h3>
+        <div class="overflow-x-auto">
+            {% if students %}
+            <table class="min-w-full">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 text-left text-gray-700">ROLL NO</th>
+                        <th class="py-2 px-4 text-left text-gray-700">NAME</th>
+                        <th class="py-2 px-4 text-left text-gray-700">BRANCH</th>
+                        <th class="py-2 px-4 text-left text-gray-700">SEMESTER</th>
+                        <th class="py-2 px-4 text-left text-gray-700">ADMISSION YEAR</th>
+                        <th class="py-2 px-4 text-left text-gray-700">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr class="hover:bg-gray-100">
+                        <td class="py-2 px-4">{{ student.roll_no }}</td>
+                        <td class="py-2 px-4">{{ student.name }}</td>
+                        <td class="py-2 px-4">{{ student.branch }}</td>
+                        <td class="py-2 px-4">{{ student.semester }}</td>
+                        <td class="py-2 px-4">{{ student.admission_year }}</td>
+                        <td class="py-2 px-4 whitespace-nowrap">
+                            <a href="{{ url_for('edit_student', roll_no=student.roll_no) }}" class="button-blue button-small mr-2">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form action="{{ url_for('delete_student', roll_no=student.roll_no) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete student {{ student.name }} ({{ student.roll_no }})? This will also delete their face encoding and attendance records!');" class="inline-block">
+                                <button type="submit" class="button-red button-small">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-gray-500 py-4 px-4 text-center">No students found. Please add a new student.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Configure Live Session{% endblock %}
+
+{% block content %}
+<div class="flex justify-center">
+    <div class="w-full max-w-2xl bg-white p-8 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Set Filters for Live Attendance</h2>
+        <p class="text-center text-gray-600 mb-8">
+            Select the branch, semester, and subject to filter which students will be recognized and logged during the live session.
+        </p>
+
+        <form action="{{ url_for('configure_session') }}" method="POST" class="space-y-6">
+            <!-- Branch Selection -->
+            <div>
+                <label for="branches" class="block text-sm font-medium text-gray-700 mb-2">Branch(es)</label>
+                <select id="branches" name="branches" multiple required
+                    class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-32">
+                    {% for branch in available_branches %}
+                        <option value="{{ branch }}" {% if current_config and branch in current_config.branches %}selected{% endif %}>{{ branch }}</option>
+                    {% endfor %}
+                </select>
+                <p class="text-xs text-gray-500 mt-1">Hold Ctrl (or Cmd on Mac) to select multiple branches.</p>
+            </div>
+
+            <!-- Semester Selection -->
+            <div>
+                <label for="semester" class="block text-sm font-medium text-gray-700">Semester</label>
+                <select id="semester" name="semester" required
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="" disabled {% if not current_config %}selected{% endif %}>Select a semester</option>
+                    {% for semester in available_semesters %}
+                        <option value="{{ semester }}" {% if current_config and semester == current_config.semester %}selected{% endif %}>{{ semester }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Subject Selection (Optional) -->
+            <div>
+                <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
+                <select id="subject" name="subject"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="" {% if not current_config or not current_config.subject %}selected{% endif %}>All Subjects (Optional)</option>
+                    {% for subject in available_subjects %}
+                         <option value="{{ subject }}" {% if current_config and subject == current_config.subject %}selected{% endif %}>{{ subject }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="flex justify-center pt-4">
+                <button type="submit"
+                    class="w-full md:w-1/2 flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="fas fa-video mr-2 mt-0.5"></i>
+                    Start Live Session
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

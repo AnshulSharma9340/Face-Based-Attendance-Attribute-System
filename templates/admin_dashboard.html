@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto"> {# Removed bg-white, rounded-lg, shadow-md from here #}
+    <h1>Dashboard Overview</h1> {# Now picks up global h1 style #}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-blue-500 text-white p-6 rounded-lg shadow-lg flex items-center justify-between section-card">
+            <div><h3 class="text-xl font-semibold">Total Students</h3><p class="text-4xl font-bold">{{ total_students }}</p></div>
+            <i class="fas fa-user-graduate text-5xl opacity-75"></i>
+        </div>
+        <div class="bg-green-500 text-white p-6 rounded-lg shadow-lg flex items-center justify-between section-card">
+            <div><h3 class="text-xl font-semibold">Total Professors</h3><p class="text-4xl font-bold">{{ total_professors }}</p></div>
+            <i class="fas fa-chalkboard-teacher text-5xl opacity-75"></i>
+        </div>
+        <div class="bg-orange-500 text-white p-6 rounded-lg shadow-lg flex items-center justify-between section-card">
+            <div><h3 class="text-xl font-semibold">Scheduled Periods</h3><p class="text-4xl font-bold">{{ total_periods }}</p></div>
+            <i class="fas fa-calendar-alt text-5xl opacity-75"></i>
+        </div>
+        <div class="bg-red-500 text-white p-6 rounded-lg shadow-lg flex items-center justify-between section-card">
+            <div><h3 class="text-xl font-semibold">Today's Attendance</h3><p class="text-4xl font-bold">{{ today_attendance }}</p></div>
+            <i class="fas fa-clipboard-check text-5xl opacity-75"></i>
+        </div>
+    </div>
+
+    <div class="mt-8 section-card text-center"> {# Added section-card #}
+        <h2>How Does A Facial Recognition Attendance System Work?</h2> {# Now picks up global h2 style #}
+        <img src="{{ url_for('static', filename='images/how_facial_recognition_works.png') }}" 
+             alt="How Facial Recognition Attendance Works" 
+             class="mx-auto max-w-full h-auto rounded-lg shadow-md border border-gray-200">
+        <p class="text-gray-600 mt-4 text-sm">Visualizing the core steps of the attendance process.</p>
+    </div>
+</div>
+{% endblock %}

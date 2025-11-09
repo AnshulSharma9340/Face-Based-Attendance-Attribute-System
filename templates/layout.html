@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block page_title %}Smart Attendance System{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar for better aesthetics (optional) */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f0f4f8; /* bg-gray-100 equivalent */
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* gray-300 equivalent */
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; /* gray-400 equivalent */
+        }
+
+        /* Sidebar Link Styling */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem; /* py-3 px-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            transition-property: background-color, color, box-shadow;
+            transition-duration: 200ms;
+            transition-timing-function: ease-in-out;
+            color: #d1d5db; /* gray-300 */
+        }
+        .sidebar-link:hover {
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* shadow-md */
+            transform: translateY(-1px); /* slight lift */
+        }
+        .sidebar-link.active {
+            background-color: #1d4ed8; /* blue-700 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-link .fas {
+            width: 1.5rem; /* w-6 */
+            text-align: center;
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+        .sidebar-link span {
+            margin-left: 1rem; /* ml-4 */
+            white-space: nowrap; /* Prevent wrapping */
+        }
+
+        /* Flash Message Dismiss Button */
+        .flash-message-dismiss {
+            margin-left: auto; /* Push to right */
+            font-size: 1.25rem; /* text-xl */
+            font-weight: bold;
+            line-height: 1;
+            padding-left: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 antialiased">
+    <div class="flex h-screen bg-gray-200">
+        {% if session.logged_in %}
+        <div class="w-64 bg-gray-800 text-white flex flex-col shadow-xl z-20">
+            <div class="p-5 bg-gray-900 text-2xl font-bold text-center border-b border-gray-700">
+                <i class="fas fa-user-check mr-2 text-blue-400"></i> Attendance
+            </div>
+            <nav class="flex-1 px-4 py-6 space-y-3 custom-scrollbar overflow-y-auto">
+                {% if session.role == 'admin' %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="sidebar-link {% if 'dashboard' in request.path %}active{% endif %}">
+                        <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+                    </a>
+                    <a href="{{ url_for('view_students') }}" class="sidebar-link {% if 'student' in request.path %}active{% endif %}">
+                        <i class="fas fa-user-graduate"></i><span>Students</span>
+                    </a>
+                    <a href="{{ url_for('view_professors') }}" class="sidebar-link {% if 'professor' in request.path %}active{% endif %}">
+                        <i class="fas fa-chalkboard-teacher"></i><span>Professors</span>
+                    </a>
+                {% endif %}
+                <a href="{{ url_for('manage_schedule') }}" class="sidebar-link {% if 'schedule' in request.path %}active{% endif %}">
+                    <i class="fas fa-calendar-alt"></i><span>Schedule</span>
+                </a>
+                <a href="{{ url_for('configure_session') }}" class="sidebar-link {% if 'configure' in request.path or 'live' in request.path %}active{% endif %}">
+                    <i class="fas fa-video"></i><span>Live Attendance</span>
+                </a>
+                <a href="{{ url_for('manual_attendance') }}" class="sidebar-link {% if 'manual' in request.path %}active{% endif %}">
+                    <i class="fas fa-edit"></i><span>Manual Entry</span>
+                </a>
+                <a href="{{ url_for('view_attendance_log') }}" class="sidebar-link {% if 'log' in request.path %}active{% endif %}">
+                    <i class="fas fa-history"></i><span>Attendance Log</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-700 mt-auto">
+                <a href="{{ url_for('logout') }}" class="flex items-center w-full px-4 py-2 text-left rounded-lg text-red-300 hover:bg-red-600 hover:text-white transition-colors duration-200 sidebar-link">
+                    <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            {% if session.logged_in %}
+            <header class="flex justify-between items-center p-4 bg-white border-b shadow-sm z-10">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-semibold text-gray-800">{{ self.page_title() }}</h1> 
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="text-gray-700 text-md">Welcome, <strong class="font-semibold text-blue-600">{{ session.username }}</strong> (<span class="capitalize">{{ session.role }}</span>)</span>
+                    <i class="fas fa-user-circle text-2xl text-gray-500"></i>
+                </div>
+            </header>
+            {% endif %}
+            
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6 custom-scrollbar">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="space-y-3 mb-6">
+                            {% for category, message in messages %}
+                                <div class="px-4 py-3 rounded-lg relative flex items-center shadow-md
+                                    {% if category == 'danger' %} bg-red-100 border border-red-400 text-red-700
+                                    {% elif category == 'success' %} bg-green-100 border border-green-400 text-green-700
+                                    {% elif category == 'warning' %} bg-yellow-100 border border-yellow-400 text-yellow-700
+                                    {% else %} bg-blue-100 border border-blue-400 text-blue-700
+                                    {% endif %}" role="alert">
+                                    <span class="block sm:inline mr-auto">{{ message }}</span>
+                                    <button type="button" class="ml-auto text-xl font-bold leading-none text-current opacity-75 hover:opacity-100 flash-message-dismiss" aria-label="Close" onclick="this.parentElement.style.display='none';">
+                                        &times;
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </main>
+
+            <footer class="p-4 bg-white border-t text-center text-gray-500 text-sm shadow-inner">
+                &copy; {{ now.year if now is defined else 2025 }} Smart Attendance System. All rights reserved.
+            </footer>
+        </div>
+    </div>
+
+</body>
+</html>

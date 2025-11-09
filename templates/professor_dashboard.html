@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Professor Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome, Professor {{ session.username }}!</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="section-card dashboard-actions">
+        <h2>Your Quick Actions</h2>
+        <div class="action-grid">
+            <a href="{{ url_for('manage_schedule') }}" class="button-blue">Manage My Schedule</a>
+            <a href="{{ url_for('configure_session') }}" class="button-green">Configure Live Session</a>
+            <a href="{{ url_for('live_attendance') }}" class="button-green">Start Live Attendance</a>
+            <a href="{{ url_for('manual_attendance') }}" class="button-secondary">Manual Attendance</a>
+            <a href="{{ url_for('view_attendance_log') }}" class="button-secondary">View Attendance Logs</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block head_extra %}
+    {{ super() }}
+    <style>
+        .dashboard-actions .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        .dashboard-actions .action-grid a {
+            padding: 15px 10px;
+            font-size: 1em;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        .dashboard-actions .action-grid a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+    </style>
+{% endblock %}

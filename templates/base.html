@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Face Attendance System{% endblock %}</title>
+    
+    {# Global CSS #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-3d.css') }}">
+    
+    {# Font Awesome for icons #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" 
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    {# Bootstrap CSS #}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" 
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    {% block head_extra %}{% endblock %} {# Placeholder for extra head content from child templates #}
+    
+    <style>
+        /* Your inline CSS from base.html here */
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+            background-color: #f8f9fa;
+        }
+        .main-content {
+            flex: 1;
+            padding-top: 70px;
+            padding-bottom: 30px;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,.05);
+        }
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+        .flash-messages {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            z-index: 1050;
+            width: 300px;
+        }
+        .flash-messages .alert {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            {# ... Your existing navigation links based on session and role ... #}
+            {% if session.get('logged_in') %}
+                {% if session.get('role') == 'admin' %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}active{% endif %}">Admin Dashboard</a>
+                    <a href="{{ url_for('view_students') }}" class="{% if request.endpoint in ['view_students', 'add_student', 'edit_student'] %}active{% endif %}">Students</a>
+                    <a href="{{ url_for('view_professors') }}" class="{% if request.endpoint in ['view_professors', 'add_professor', 'view_professor_profile', 'edit_professor_profile'] %}active{% endif %}">Professors</a>
+                {% elif session.get('role') == 'professor' %}
+                    <a href="{{ url_for('professor_dashboard') }}" class="{% if request.endpoint == 'professor_dashboard' %}active{% endif %}">Professor Dashboard</a>
+                {% endif %}
+                <a href="{{ url_for('manage_schedule') }}" class="{% if request.endpoint in ['manage_schedule', 'delete_period'] %}active{% endif %}">Schedule</a>
+                <a href="{{ url_for('configure_session') }}" class="{% if request.endpoint == 'configure_session' %}active{% endif %}">Configure Live</a>
+                <a href="{{ url_for('live_attendance') }}" class="{% if request.endpoint == 'live_attendance' %}active{% endif %}">Live Attendance</a>
+                <a href="{{ url_for('manual_attendance') }}" class="{% if request.endpoint == 'manual_attendance' %}active{% endif %}">Manual Attendance</a>
+                <a href="{{ url_for('view_attendance_log') }}" class="{% if request.endpoint in ['view_attendance_log', 'export_attendance', 'delete_log_entry'] %}active{% endif %}">Attendance Log</a>
+                <a href="{{ url_for('logout') }}">Logout ({{ session.username }})</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <div class="container mt-4">
+            <div class="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Face Attendance System</p>
+    </footer>
+
+    {# IMPORTANT: Bootstrap JavaScript Bundle MUST be loaded BEFORE your custom scripts #}
+    {# Place it right before the closing </body> tag #}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+            crossorigin="anonymous"></script>
+    
+    {# This block will contain your page-specific JavaScript (like live.html's script) #}
+    {% block scripts %}{% endblock %}
+</body>
+</html>
