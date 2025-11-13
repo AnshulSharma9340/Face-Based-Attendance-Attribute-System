@@ -6,6 +6,7 @@ The system captures a person’s face in real-time, detects their identity, mark
 Important Info : if you want to use my project you have to make changes at some place 
 1. Make a folder in the main branch names "models"
 2. upload the hugging face models directly from the hugging face website the name of the models are
+3. visit this website and find all the models at once place -  "https://github.com/eveningglow/age-and-gender-classification/tree/master/model"
    a. <img width="1442" height="327" alt="image" src="https://github.com/user-attachments/assets/b3bfc57b-3c96-4b15-be29-938e9f597102" />
 
 
@@ -141,5 +142,6 @@ B.Tech in Data Science | AI & Software Engineering  and Machine Learning Enthusi
 “Artificial Intelligence is not just about automation — it’s about making systems that think, adapt, and evolve like humans.”
 
 ⭐ If you like this project, give it a star on GitHub!
+
 
 
