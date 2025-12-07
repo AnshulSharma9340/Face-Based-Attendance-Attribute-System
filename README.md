@@ -97,7 +97,7 @@ This chart illustrates the real-time process from video capture to attendance lo
 
 <div align="center">
 
-```mermaid
+
 flowchart TD
     A[Start Live Webcam Stream] --> B{Detect Face?};
     B -- Yes --> C[Extract Face Embeddings & Attributes];
