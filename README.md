@@ -1,8 +1,9 @@
-<img src="[Your GIF Banner Image]" width="100%">
+<img src="[[Your GIF Banner Image]](https://giphy.com/gifs/scan-face-detection-security-solutions-rxFW7n1NU7E6bwJ5ht)" width="100%">
 
-<div align="center"><img src="[Your System Logo Image]" style="width: 220px; height: 220px;" alt="AI Face Attendance System Logo" /></div>
+<div align="center"><img src="[[Your System Logo Image]](https://repository-images.githubusercontent.com/267899898/6d8fdb00-a202-11ea-86cd-7edacc1cac60)" style="width: 220px; height: 220px;" alt="AI Face Attendance System Logo" /></div>
 
-<h1 align="center">🧠 AI Face Attendance & Attribute System</h1>
+<h1 align="center">🧠 Face-Based-Attendance-Attribute-System
+</h1>
 
 <div align="center" style="margin: 10px 0 24px;">
   <a href="https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System/issues">🐛 Report Bug</a>
@@ -80,27 +81,67 @@ Live Webcam Stream → Detect Face (OpenCV/dlib)
 <h2 id="project-structure">📂 Repository Structure</h2>
 
 
-AI-Face-Attendance-System/
-├── app.py                      # Flask server & core logic
-├── requirements.txt            # Python dependencies
-├── models/                     # CNN models
-│   ├── age_model.h5
-│   ├── gender_model.h5
-│   └── emotion_model.h5
-├── database/
-│   └── attendance.db           # SQLite DB
-├── static/                     # Frontend assets
-│   ├── css/
-│   ├── js/
-│   └── images/                 # User images & screenshots
-├── templates/
-│   ├── index.html              # Live attendance page
-│   └── dashboard.html          # Attendance logs dashboard
-└── utils/
-    ├── face_recognition.py     # Face encoding & matching
-    ├── database_helper.py      # DB CRUD operations
-    └── preprocess.py           # Image preprocessing & model loading
+Copy page
+├── .gitignore
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── __pycache__
+    ├── database_utils.cpython-312.pyc
+    ├── shared_state.cpython-312.pyc
+    └── utils.cpython-312.pyc
+├── app.py
+├── attendance.db
+├── data
+    ├── sample.csv
+    ├── sample.txt
+    ├── sample.xlsx
+    ├── sample.xml
+    └── sample_excel.xlsx
+├── database_setup.py
+├── dlib-19.22.99-cp39-cp39-win_amd64.whl
+├── git
+├── known_face_encodings.pkl
+├── live_attendance_module.py
+├── manager_app.py
+├── output
+    ├── output.csv
+    ├── output.txt
+    ├── output_excel.xlsx
+    └── web_data.csv
+├── requirements.txt
+├── static
+    ├── images
+    │   ├── face_scan_background.png
+    │   └── how_facial_recognition_works.png
+    ├── style-3d.css
+    └── style.css
+├── student_manager_app.py
+├── templates
+    ├── add_professor.html
+    ├── add_student.html
+    ├── admin_dashboard.html
+    ├── base.html
+    ├── configure_session.html
+    ├── dashboard.html
+    ├── edit_professor_profile.html
+    ├── edit_student.html
+    ├── landing.html
+    ├── layout.html
+    ├── live.html
+    ├── log.html
+    ├── login.html
+    ├── manual_attendance.html
+    ├── professor_dashboard.html
+    ├── professor_profile.html
+    ├── professors.html
+    ├── schedule.html
+    └── students.html
+└── tesnorflow.ipynb
 
+
+This is the folder structure or if you face any problem visit this site  - https://uithub.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System
 
 <img src="[Your GIF Banner Image]" width="100%">
 
