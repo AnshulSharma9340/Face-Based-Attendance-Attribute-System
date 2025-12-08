@@ -1,0 +1,344 @@
+/* ========================================
+   Theme Toggle System - CSS Variables
+   ======================================== */
+
+/* Default Light Theme */
+:root {
+  /* Background Colors */
+  --bg-primary: #f8fafd;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f6f8fa;
+  --bg-elevated: #ffffff;
+
+  /* Text Colors */
+  --text-primary: #4a4a4a;
+  --text-secondary: #555;
+  --text-tertiary: #666;
+  --text-heading: #334455;
+
+  /* UI Colors */
+  --border-color: #e0e0e0;
+  --border-light: #f0f0f0;
+  --shadow-sm: rgba(0, 0, 0, 0.05);
+  --shadow-md: rgba(0, 0, 0, 0.08);
+  --shadow-lg: rgba(0, 0, 0, 0.12);
+
+  /* Accent Colors */
+  --accent-primary: #28a745;
+  --accent-secondary: #007bff;
+  --accent-danger: #dc3545;
+  --accent-warning: #ffc107;
+
+  /* Navigation */
+  --nav-bg: #34495e;
+  --nav-text: #ecf0f1;
+  --nav-hover-bg: rgba(255, 255, 255, 0.08);
+  --nav-active-text: #8ce1ff;
+  --nav-active-bg: rgba(97, 218, 251, 0.08);
+
+  /* Form Elements */
+  --input-bg: #fcfdff;
+  --input-border: #e0e0e0;
+  --input-focus-border: #a0c9ff;
+  --input-focus-shadow: rgba(0, 123, 255, 0.15);
+
+  /* Scrollbar */
+  --scrollbar-track: #f8f8f8;
+  --scrollbar-thumb: #d4d9e0;
+  --scrollbar-thumb-hover: #c0c5cc;
+
+  /* Footer */
+  --footer-bg: #343a40;
+  --footer-text: white;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  /* Background Colors */
+  --bg-primary: #1a1d23;
+  --bg-secondary: #242831;
+  --bg-tertiary: #2d3139;
+  --bg-elevated: #2d3139;
+
+  /* Text Colors */
+  --text-primary: #e4e6eb;
+  --text-secondary: #b0b3b8;
+  --text-tertiary: #8a8d93;
+  --text-heading: #e4e6eb;
+
+  /* UI Colors */
+  --border-color: #3a3f4b;
+  --border-light: #2f3440;
+  --shadow-sm: rgba(0, 0, 0, 0.3);
+  --shadow-md: rgba(0, 0, 0, 0.4);
+  --shadow-lg: rgba(0, 0, 0, 0.5);
+
+  /* Accent Colors */
+  --accent-primary: #3fb950;
+  --accent-secondary: #58a6ff;
+  --accent-danger: #f85149;
+  --accent-warning: #d29922;
+
+  /* Navigation */
+  --nav-bg: #1c1f26;
+  --nav-text: #e4e6eb;
+  --nav-hover-bg: rgba(255, 255, 255, 0.1);
+  --nav-active-text: #58a6ff;
+  --nav-active-bg: rgba(88, 166, 255, 0.15);
+
+  /* Form Elements */
+  --input-bg: #2d3139;
+  --input-border: #3a3f4b;
+  --input-focus-border: #58a6ff;
+  --input-focus-shadow: rgba(88, 166, 255, 0.25);
+
+  /* Scrollbar */
+  --scrollbar-track: #1a1d23;
+  --scrollbar-thumb: #3a3f4b;
+  --scrollbar-thumb-hover: #4a4f5b;
+
+  /* Footer */
+  --footer-bg: #1c1f26;
+  --footer-text: #e4e6eb;
+}
+
+/* Smooth transitions for theme changes */
+body,
+nav,
+footer,
+.section-card,
+form,
+table,
+input,
+select,
+textarea,
+.alert {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* Apply theme variables to existing elements */
+body {
+  background: linear-gradient(
+    135deg,
+    var(--bg-primary) 0%,
+    var(--bg-tertiary) 100%
+  );
+  color: var(--text-primary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-heading);
+}
+
+h2 {
+  color: var(--accent-primary);
+  border-bottom-color: var(--border-color);
+}
+
+/* Navigation */
+nav {
+  background-color: var(--nav-bg);
+}
+
+nav a {
+  color: var(--nav-text);
+}
+
+nav a:hover {
+  background-color: var(--nav-hover-bg);
+}
+
+nav a.active {
+  color: var(--nav-active-text);
+  background-color: var(--nav-active-bg);
+  border-bottom-color: var(--accent-secondary);
+}
+
+/* Cards and Sections */
+.section-card {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-light);
+  box-shadow: 0 3px 8px var(--shadow-md);
+}
+
+.section-card:hover {
+  box-shadow: 0 5px 15px var(--shadow-lg);
+}
+
+/* Tables */
+table {
+  background-color: var(--bg-secondary);
+  box-shadow: 0 1px 4px var(--shadow-sm);
+}
+
+th {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+th,
+td {
+  border-bottom-color: var(--border-light);
+}
+
+tbody tr:nth-child(even) {
+  background-color: var(--bg-tertiary);
+}
+
+tbody tr:hover {
+  background-color: var(--bg-tertiary);
+}
+
+/* Forms */
+form {
+  background-color: var(--bg-secondary);
+  box-shadow: 0 3px 8px var(--shadow-md);
+}
+
+label {
+  color: var(--text-primary);
+}
+
+input[type="text"],
+input[type="time"],
+input[type="date"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text-primary);
+  box-shadow: inset 1px 1px 3px var(--shadow-sm);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 2px var(--input-focus-shadow);
+  background-color: var(--bg-secondary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-color: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Footer */
+footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--nav-text);
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 5px;
+  transition: all 0.15s ease-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  background-color: var(--nav-hover-bg);
+  transform: translateY(-1px) scale(1.05);
+}
+
+.theme-toggle:active {
+  transform: translateY(0) scale(0.95);
+}
+
+/* Dark theme specific adjustments */
+[data-theme="dark"]
+  .filter-group
+  input[type="radio"]
+  + label.radio-label::before {
+  background-color: var(--input-bg);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .student-list-checkboxes {
+  background-color: var(--input-bg);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .student-list-checkboxes label {
+  background-color: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .student-list-checkboxes label:hover {
+  background-color: var(--bg-elevated);
+}
+
+[data-theme="dark"] .student-list-checkboxes input[type="checkbox"] {
+  background-color: var(--input-bg);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .live-container,
+[data-theme="dark"] .camera-capture-container {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .live-controls {
+  background-color: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .live-status {
+  color: var(--text-secondary);
+}
+
+/* Alert messages in dark theme */
+[data-theme="dark"] .alert-success {
+  background-color: rgba(63, 185, 80, 0.15);
+  border-color: rgba(63, 185, 80, 0.3);
+  color: #3fb950;
+}
+
+[data-theme="dark"] .alert-warning {
+  background-color: rgba(210, 153, 34, 0.15);
+  border-color: rgba(210, 153, 34, 0.3);
+  color: #d29922;
+}
+
+[data-theme="dark"] .alert-info {
+  background-color: rgba(88, 166, 255, 0.15);
+  border-color: rgba(88, 166, 255, 0.3);
+  color: #58a6ff;
+}
+
+[data-theme="dark"] .alert-danger {
+  background-color: rgba(248, 81, 73, 0.15);
+  border-color: rgba(248, 81, 73, 0.3);
+  color: #f85149;
+}
