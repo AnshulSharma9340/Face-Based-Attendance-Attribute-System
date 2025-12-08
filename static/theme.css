@@ -278,10 +278,7 @@ footer {
 }
 
 /* Dark theme specific adjustments */
-[data-theme="dark"]
-  .filter-group
-  input[type="radio"]
-  + label.radio-label::before {
+[data-theme="dark"] .filter-group input[type="radio"] + label.radio-label::before {
   background-color: var(--input-bg);
   border-color: var(--border-color);
 }
