@@ -15,15 +15,15 @@
         {% endif %}
     {% endwith %}
 
-    <form method="POST" action="{{ url_for('add_student') }}" enctype="multipart/form-data" class="form-container">
+    <form method="POST" action="{{ url_for('add_student') }}" enctype="multipart/form-data" class="form-container needs-validation" novalidate>
         {# Changed: form-grid is now INSIDE the form, on a new div #}
         <div class="form-grid"> 
             <div class="form-column">
                 <label for="roll_no">Roll Number:</label>
-                <input type="text" id="roll_no" name="roll_no" value="{{ request.form.get('roll_no', '') }}" required>
+                <input type="text" id="roll_no" name="roll_no" value="{{ request.form.get('roll_no', '') }}" required pattern="^[A-Za-z0-9]+$" title="Alphanumeric characters only">
 
                 <label for="name">Full Name:</label>
-                <input type="text" id="name" name="name" value="{{ request.form.get('name', '') }}" required>
+                <input type="text" id="name" name="name" value="{{ request.form.get('name', '') }}" required pattern="^[A-Za-z\s]+$" title="Letters and spaces only">
 
                 <label for="branch">Branch:</label>
                 <input type="text" id="branch" name="branch" value="{{ request.form.get('branch', '') }}" required>
@@ -32,7 +32,7 @@
                 <input type="number" id="semester" name="semester" value="{{ request.form.get('semester', '') }}" min="1" max="10" required>
 
                 <label for="admission_year">Year of Admission (e.g., 2023):</label>
-                <input type="number" id="admission_year" name="admission_year" value="{{ request.form.get('admission_year', current_year) }}" min="1900" max="{{ current_year + 5 }}" required>
+                <input type="number" id="admission_year" name="admission_year" value="{{ request.form.get('admission_year', current_year) }}" min="2000" max="{{ current_year + 5 }}" required>
 
                 <label for="subject">Subject (Optional):</label>
                 <input type="text" id="subject" name="subject" value="{{ request.form.get('subject', '') }}">

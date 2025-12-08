@@ -18,16 +18,16 @@
         {% endif %}
     {% endwith %}
 
-    <form method="POST" action="{{ url_for('add_professor') }}" enctype="multipart/form-data" id="addProfessorForm">
+    <form method="POST" action="{{ url_for('add_professor') }}" enctype="multipart/form-data" id="addProfessorForm" class="needs-validation" novalidate>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <div class="mb-4">
                     <label for="prof_id" class="block text-gray-700 text-sm font-bold mb-2">Professor ID:</label>
-                    <input type="text" id="prof_id" name="prof_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ request.form.prof_id }}" required>
+                    <input type="text" id="prof_id" name="prof_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ request.form.prof_id }}" required pattern="^[A-Za-z0-9]+$" title="Alphanumeric characters only">
                 </div>
                 <div class="mb-4">
                     <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
-                    <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ request.form.name }}" required>
+                    <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ request.form.name }}" required pattern="^[A-Za-z\s]+$" title="Letters and spaces only">
                 </div>
                 <div class="mb-4">
                     <label for="department" class="block text-gray-700 text-sm font-bold mb-2">Department:</label>
@@ -39,7 +39,7 @@
                 </div>
                 <div class="mb-4">
                     <label for="mobile" class="block text-gray-700 text-sm font-bold mb-2">Mobile:</label>
-                    <input type="text" id="mobile" name="mobile" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ request.form.mobile }}">
+                    <input type="text" id="mobile" name="mobile" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ request.form.mobile }}" pattern="^\d{10}$" title="10 digit mobile number">
                 </div>
             </div>
 
