@@ -1,237 +1,240 @@
-<img src="[[Your GIF Banner Image]](https://giphy.com/gifs/scan-face-detection-security-solutions-rxFW7n1NU7E6bwJ5ht)" width="100%">
+# 🚀 AI Face Attendance System
 
-<div align="center"><img src="[[Your System Logo Image]](https://repository-images.githubusercontent.com/267899898/6d8fdb00-a202-11ea-86cd-7edacc1cac60)" style="width: 220px; height: 220px;" alt="AI Face Attendance System Logo" /></div>
+### **Face-Based-Attendance-Attribute-System**
 
-<h1 align="center">🧠 Face-Based-Attendance-Attribute-System
-</h1>
+#### *Next-Gen Multi-Attribute Biometric Recognition | Flask • Deep Learning • Computer Vision*
 
-<div align="center" style="margin: 10px 0 24px;">
-  <a href="https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System/issues">🐛 Report Bug</a>
-  •
-  <a href="https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System/issues">💡 Request Feature</a>
-  •
-  <a href="mailto:anshulsharma7162@gmail.com">📧 Contact Author</a>
-</div>
+<p align="center">
+  <img src="https://img.shields.io/badge/AI%20POWERED-Facial%20Recognition-blueviolet?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Deep%20Learning-Attributes%20Prediction-ff69b4?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/PRs-Welcome-success?style=for-the-badge"/>
+</p>
 
-<img src="[Your GIF Banner Image]" width="100%">
+<p align="center">
+  <img src="https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System/raw/main/static/images/face_scan_background.png" width="650"/>
+</p>
 
-<div align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=00FF7F&width=550&lines=The+Future+of+Biometric+Attendance;Real-time+Age%2C+Gender%2C+and+Emotion+Analysis;Powered+by+Deep+Learning+and+Flask;The+Next-Level+Attendance+Solution!" alt="Dynamic Text Banner" />
-</div>
+---
 
-<img src="[Your GIF Banner Image]" width="100%">
+## 🌌 **Dynamic Text Banner**
 
-<h2 id="insights">📊 Project Insights & Status</h2>
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=26&pause=1000&color=30F730&center=true&vCenter=true&width=650&lines=AI+Powered+Face+Attendance+System;Real-Time+Age+Gender+Emotion+Detection;Flask+%7C+OpenCV+%7C+TensorFlow;Advanced+Biometric+Recognition+Suite;Made+by+Anshul+Sharma+DS+Student"/>
+</p>
 
-|                                                                                                                 Status                                                                                                                 |                                                                                                                    Metrics                                                                                                                    |                                                                                                           Codebase                                                                                                           |                                                                                                                   License                                                                                                                  |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                                                             [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge)](CONTRIBUTING.md)                                                            | [![Visitors](https://api.visitorbadge.io/api/Visitors?path=AnshulSharma9340%2FFace-Based-Attendance-Attribute-System\&countColor=%235C3EE8\&style=for-the-badge)](https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System) |                                             [![Python Version](https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge\&logo=python)](https://www.python.org/downloads/)                                            |                                                             [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-yellow.svg?style=for-the-badge)](LICENSE)                                                            |
-| [![GitHub Stars](https://img.shields.io/github/stars/AnshulSharma9340/Face-Based-Attendance-Attribute-System?style=for-the-badge\&logo=github)](https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System/stargazers) |      [![GitHub Forks](https://img.shields.io/github/forks/AnshulSharma9340/Face-Based-Attendance-Attribute-System?style=for-the-badge\&logo=github)](https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System/network)      | [![Repo Size](https://img.shields.io/github/repo-size/AnshulSharma9340/Face-Based-Attendance-Attribute-System?style=for-the-badge\&logo=github)](https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System) | [![Last Commit](https://img.shields.io/github/last-commit/AnshulSharma9340/Face-Based-Attendance-Attribute-System?style=for-the-badge\&logo=git)](https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System/commits/main) |
+---
 
-<img src="[Your GIF Banner Image]" width="100%">
+# 📊 **Project Insights**
 
-<h2 id="overview">🌟 Project Overview</h2>
+| Status                | Metrics     | Codebase      | License        |
+| --------------------- | ----------- | ------------- | -------------- |
+| 🔥 Active Development | 👀 Visitors | 🐍 Python 3.x | 📝 Apache-2.0  |
+| ⭐ Stars               | 🍴 Forks    | 📦 Repo Size  | ⏱️ Last Commit |
 
-> The **AI Face Attendance System** is a real-time Python & Flask-based solution for automated attendance tracking with **multi-attribute recognition**.
-> Alongside facial identification, it predicts **Age**, **Gender**, and **Emotion**, storing detailed contextual information for every attendance entry. Ideal for schools, colleges, and organizations aiming for **advanced biometric attendance**.
+---
 
-<img src="[Your GIF Banner Image]" width="100%">
+# 🌟 **Project Overview**
 
-<h2 id="features">🚀 Key Features</h2>
+The **AI Face Attendance System** is an advanced, real-time, multi-attribute biometric solution built using **Flask, OpenCV, dlib, TensorFlow, and CNN-based models**.
 
-### 🔬 Multi-Attribute Recognition
+It doesn’t just mark attendance —
+✨ It logs **Age + Gender + Emotion**
+✨ It matches **Face Embeddings (128-D)**
+✨ It stores **Complete Contextual Metadata**
+✨ It supports **Live Dashboard + CSV/Excel export**
 
-* 😄 **Emotion Recognition** – Detects real-time emotions like `Happy`, `Sad`, `Angry`, etc.
-* 🧓 **Age & Gender Classification** – Estimates approximate age and gender to enrich attendance logs.
-* **Dedicated Deep Learning Models** – Each attribute uses a CNN model (`.h5`) trained for high accuracy.
+Ideal for:
+🎓 Colleges · 🏢 Corporate Offices · 🏫 Schools · 🔬 Research Labs · 📊 Smart Entry Systems
 
-### 🌐 Core Architecture
+---
 
-* 🎭 **Real-Time Face Recognition** – Uses `dlib`/HOG/CNN embeddings for fast identification.
-* 🕒 **Verified Attendance Logging** – Attendance recorded with timestamp + all detected attributes.
-* **Flask Web Interface** – Serves video stream, runs model inference, and displays results on a user-friendly frontend.
+# 🚀 **Key Features**
 
-<img src="[Your GIF Banner Image]" width="100%">
+### 🔬 **Multi-Attribute Recognition**
 
-<h2 id="tech-stack">🧩 Technology Stack</h2>
+* 😄 Emotion Detection (Happy, Sad, Angry…)
+* 🧓 Age Classification
+* 🚻 Gender Prediction
+* 🧠 CNN-based models (`.h5`) for high accuracy
 
-| Component        | Technology                                                                                                                                                                                                    | Details                                                     |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Backend / Server | <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/> <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white"/> | Flask server handles video stream & API endpoints           |
-| Computer Vision  | <img src="https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white"/>                                                                                                       | Captures, preprocesses frames, optimizes video streaming    |
-| Deep Learning    | <img src="https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white"/> <img src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white"/>   | Loads CNN models for age, gender, emotion prediction        |
-| Face Recognition | <img src="https://img.shields.io/badge/dlib-0072C6?style=for-the-badge&logo=dlib&logoColor=white"/> / `face-recognition`                                                                                      | Efficient face detection + 128-D embeddings for recognition |
-| Database         | <img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white"/>                                                                                                       | Stores attendance logs with attributes                      |
-| Models           | Age, Gender, Emotion `.h5` files                                                                                                                                                                              | Pre-trained CNN models in `/models` directory               |
+### 🌐 **Face Recognition Engine**
 
-<img src="[Your GIF Banner Image]" width="100%">
+* 128-D embeddings (dlib/face-recognition)
+* High accuracy, fast detection pipeline
+* Auto-identification from stored encodings
 
-<h2 id="working-flow">🧭 System Architecture & Flow</h2>
+### 📡 **Live Attendance Logging**
 
+* Timestamped entries
+* Auto-detection of faces
+* Context-rich attendance metadata
 
-Live Webcam Stream → Detect Face (OpenCV/dlib)
-      │
-      ├─ Yes → Recognized? → TensorFlow: Predict Age, Gender, Emotion → Attendance Logged? → SQLite DB → Web Dashboard
-      │
-      └─ No → Display "Unknown / Enroll"
+### 🎛️ **Web-Based Interface**
 
+* Flask dashboard
+* Real-time video streaming
+* Live logs + charts
 
-<img src="[Your GIF Banner Image]" width="100%">
+---
 
-<h2 id="project-structure">📂 Repository Structure</h2>
+# 🧩 **Technology Stack**
 
+| Component        | Technology              | Description                         |
+| ---------------- | ----------------------- | ----------------------------------- |
+| Backend          | Flask                   | Video streaming, routing, templates |
+| CV Engine        | OpenCV                  | Frame capture, detection            |
+| Deep Learning    | TensorFlow/Keras        | CNN models for attributes           |
+| Face Recognition | dlib / face-recognition | 128-D embeddings                    |
+| Database         | SQLite                  | Attendance logs                     |
+| UI               | HTML • CSS              | Dashboard & live feed               |
 
-Copy page
-├── .gitignore
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── __pycache__
-    ├── database_utils.cpython-312.pyc
-    ├── shared_state.cpython-312.pyc
-    └── utils.cpython-312.pyc
-├── app.py
-├── attendance.db
-├── data
-    ├── sample.csv
-    ├── sample.txt
-    ├── sample.xlsx
-    ├── sample.xml
-    └── sample_excel.xlsx
-├── database_setup.py
-├── dlib-19.22.99-cp39-cp39-win_amd64.whl
-├── git
-├── known_face_encodings.pkl
-├── live_attendance_module.py
-├── manager_app.py
-├── output
-    ├── output.csv
-    ├── output.txt
-    ├── output_excel.xlsx
-    └── web_data.csv
-├── requirements.txt
-├── static
-    ├── images
-    │   ├── face_scan_background.png
-    │   └── how_facial_recognition_works.png
-    ├── style-3d.css
-    └── style.css
-├── student_manager_app.py
-├── templates
-    ├── add_professor.html
-    ├── add_student.html
-    ├── admin_dashboard.html
-    ├── base.html
-    ├── configure_session.html
-    ├── dashboard.html
-    ├── edit_professor_profile.html
-    ├── edit_student.html
-    ├── landing.html
-    ├── layout.html
-    ├── live.html
-    ├── log.html
-    ├── login.html
-    ├── manual_attendance.html
-    ├── professor_dashboard.html
-    ├── professor_profile.html
-    ├── professors.html
-    ├── schedule.html
-    └── students.html
-└── tesnorflow.ipynb
+---
 
+# 🧭 **System Architecture**
 
-This is the folder structure or if you face any problem visit this site  - https://uithub.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System
+```
+     ┌──────────────────────────────────────────┐
+     │          LIVE WEBCAM STREAM              │
+     └───────────────┬──────────────────────────┘
+                     ▼
+         ┌────────────────────────┐
+         │  FACE DETECTION (CV)   │
+         └───────────────┬────────┘
+                         │ Yes
+                         ▼
+         ┌──────────────────────────┐
+         │  FACE RECOGNIZED ?       │──No──▶ Unknown User
+         └───────────────┬──────────┘
+                         │ Yes
+                         ▼
+      ┌─────────────────────────────────────────┐
+      │ TENSORFLOW MODELS (Age • Gender • Emotion) │
+      └───────────────────┬───────────────────────┘
+                          ▼
+                Attendance Logging  
+                          ▼
+         ┌────────────────────────────────┐
+         │     SQLite Database            │
+         └────────────────────────────────┘
+                          ▼
+                Web Dashboard & Logs
+```
 
-<img src="[Your GIF Banner Image]" width="100%">
+---
 
-<h2 id="installation-setup">⚙️ Installation & Quick Start</h2>
+# 📂 **Repository Structure**
 
-**Prerequisites:** Python 3.x, Webcam connected
+```
+Face-Based-Attendance-Attribute-System/
+│── app.py
+│── manager_app.py
+│── student_manager_app.py
+│── live_attendance_module.py
+│── database_setup.py
+│── database/
+│── models/ (Age, Gender, Emotion .h5)
+│── templates/ (HTML UI)
+│── static/
+│   ├── images/
+│   ├── css/
+│   └── js/
+│── known_face_encodings.pkl
+│── attendance.db
+│── requirements.txt
+│── sample.csv / sample.txt / sample.xml
+│── output/
+└── README.md
+```
 
-**1️⃣ Clone & Navigate**
+---
 
+# ⚙️ **Installation & Quick Start**
 
+## 1️⃣ Clone Repo
+
+```bash
 git clone https://github.com/AnshulSharma9340/Face-Based-Attendance-Attribute-System
 cd Face-Based-Attendance-Attribute-System
+```
 
+## 2️⃣ Create Virtual Environment
 
-**2️⃣ Virtual Environment**
-
-
+```bash
 python -m venv venv
+.\venv\Scripts\activate  # Windows
 source venv/bin/activate  # Linux/Mac
-.\venv\Scripts\activate   # Windows
+```
 
+## 3️⃣ Install Requirements
 
-**3️⃣ Install Dependencies**
-
-
+```bash
 pip install -r requirements.txt
+```
 
+## 4️⃣ Run Server
 
-**4️⃣ Run the Application**
-
-
+```bash
 python app.py
+```
 
-Visit 👉 `http://127.0.0.1:5000/`
+▶ Visit: **[http://127.0.0.1:5000/](http://127.0.0.1:5000/)**
 
-<img src="[Your GIF Banner Image]" width="100%">
+---
 
-<h2 id="database-schema">🧾 Database Schema (SQLite)</h2>
+# 🧾 **Database Schema**
 
-| Column  | Type                              | Description                     |
-| ------- | --------------------------------- | ------------------------------- |
-| id      | INTEGER PRIMARY KEY AUTOINCREMENT | Unique attendance ID            |
-| name    | TEXT                              | Recognized person               |
-| gender  | TEXT                              | Detected gender                 |
-| age     | INTEGER                           | Predicted age                   |
-| emotion | TEXT                              | Detected emotion                |
-| time    | TEXT                              | Timestamp (YYYY-MM-DD HH:MM:SS) |
+| Column  | Type    | Description                |
+| ------- | ------- | -------------------------- |
+| id      | INTEGER | Auto-increment primary key |
+| name    | TEXT    | User name                  |
+| gender  | TEXT    | Predicted gender           |
+| age     | INTEGER | Predicted age              |
+| emotion | TEXT    | Detected emotion           |
+| time    | TEXT    | Timestamp                  |
 
-<img src="[Your GIF Banner Image]" width="100%">
+---
 
-<h2 id="screenshots">📸 Visual Demo</h2>
+# 📸 **Visual Demo**
 
-<div align="center">
-<h3>Live Attendance Feed & Attributes</h3>
-<img src="./static/images/screenshots/live_feed.png" alt="Live Feed" style="width:80%;border:2px solid #00FF7F;border-radius:8px;"/>
-<h3>Dashboard & Attendance Log</h3>
-<img src="./static/images/screenshots/dashboard_log.png" alt="Dashboard" style="width:80%;border:2px solid #5C3EE8;border-radius:8px;"/>
-</div>
+### 🎥 Live Attendance Feed
 
-<img src="[Your GIF Banner Image]" width="100%">
+<img src="static/images/face_scan_background.png" width="500"/>
 
-<h2 id="future-enhancements">💡 Roadmap</h2>
+### 🖥️ Dashboard Screenshot
 
-* Upgrade to FaceNet/ArcFace for higher accuracy.
-* Web-based admin enrollment for new users.
-* CSV/Excel export & analytics dashboards.
-* Scale DB to PostgreSQL/MySQL for large deployments.
+<img src="static/images/how_facial_recognition_works.png" width="500"/>
 
-<img src="[Your GIF Banner Image]" width="100%">
+---
 
-<h2 id="contributing">🤝 Contributing</h2>
+# 💡 **Future Roadmap**
+
+* 🔥 Migrate to FaceNet / ArcFace
+* 🌍 Cloud-based user enrollment
+* 📊 Analytics + Power BI dashboard
+* 🗄️ MySQL/PostgreSQL support
+* 📱 Mobile App for student attendance
+* 🎯 Model optimization (ONNX/TensorRT)
+
+---
+
+# 🤝 Contributing
 
 * ⭐ Star the repo
-* Fork & PR with well-documented code
-* Report issues via GitHub Issues
+* 🍴 Fork and PR
+* 🐛 Report issues on GitHub
 
-<img src="[Your GIF Banner Image]" width="100%">
+---
 
-<h2 id="license">📜 License</h2>
+# 📜 License
 
-Licensed under **Apache License 2.0** – free for research & educational use.
+Licensed under **Apache License 2.0**
 
-<img src="[Your GIF Banner Image]" width="100%">
+---
 
-<h2 id="author">🧑‍💻 Author & Contact</h2>
+# 🧑‍💻 Author
 
-Anshul Sharma | B.Tech Data Science
-Email: [anshulsharma7162@gmail.com](mailto:anshulsharma7162@gmail.com)
-GitHub: [@AnshulSharma9340](https://github.com/AnshulSharma9340)
+**Anshul Sharma**
+📧 Email: *[anshulsharma7162@gmail.com](mailto:anshulsharma7162@gmail.com)*
+🐙 GitHub: *@AnshulSharma9340*
 
-<div align="center"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Glowing%20Star.png" width="25" height="25"/> Star this repo to show appreciation! <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Glowing%20Star.png" width="25" height="25"/></div>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=65&section=footer"/>
+<p align="center"><b>🌟 Star this repository if you like the project!</b></p>
